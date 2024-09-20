@@ -107,13 +107,14 @@ for bridge in bridge_lines.keys():
         # UPDATED: Label the Plot and save to pdf 
         ax.set_xlabel("Length Range(m)")
         ax.set_ylabel("Count (Annual)")
-        ax.set_title(f"Counts of Ship Sizes by Year for {bridge}")
+        ax.set_title(f"Distribution of Ship Sizes by Year for {bridge}")
         
         ax.legend(loc="center left", bbox_to_anchor=(1, 0.5)) # Moves legend outside of graph 
 
         plt.tight_layout()
         
-        plt.savefig(rf"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\New Histograms\\Counts of Ship Sizes by Year for {bridge}.pdf", dpi=300, bbox_inches="tight")
+        
+        plt.savefig(rf"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\New Histograms\\Distribution of Ship Sizes by Year for {bridge}.pdf", dpi=300, bbox_inches="tight")
         plt.close(fig)
             
         # Write the results to a CSV file
