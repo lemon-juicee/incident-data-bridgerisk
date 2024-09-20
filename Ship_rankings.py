@@ -1,15 +1,15 @@
 ## Written by Natalia Dougan
 ## Edited by Diran Jimenez
 
- import pandas as pd 
+import pandas as pd 
 import numpy as np 
 import matplotlib.pyplot as plt
 import os
 import textwrap
-from matplotlib.backends.backend_pdf import PdfPages
+#from matplotlib.backends.backend_pdf import PdfPages
 
 # This file path should link to the data on your machine
-folder_path = r"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\Bridge Result Data\Filtered Data"
+folder_path = r"C:\Users\natal\JHU-Key-Bridge-internal\Bridge Result Data\Filtered Data"
 
 # Dictionary to store average ships per day for each bridge with no size requirement
 bridge_results = {}
@@ -48,7 +48,7 @@ filtered_Bridge_results = dict(sorted(bridge_results.items(), key=lambda item: i
 Bridge_results_df = pd.DataFrame([{"Bridge": i, "Daily Trips": j[0], "Total Trips": j[1]}  for i, j in filtered_Bridge_results.items()])
 
 # Saves the results to a csv 
-Bridge_results_df.to_csv(r"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\Rankings New\Trip Data for all Large Ships.csv", index=False)
+Bridge_results_df.to_csv(r"C:\Users\natal\JHU-Key-Bridge-internal\Ship Ranking Plots Updated\\Trip Data for all Large Ships.csv", index=False)
 
 # Focus on bridges that have more than 1 trip per day on average
 filtered_results = {k: v[0] for k, v in filtered_Bridge_results.items() if v[0] >= 1}
@@ -112,7 +112,7 @@ for n in [10, 25, 50]:
         #     for b in bridges_with_traffic[:50]:
         #         i += 1
         #         print(f"{i}: {b[0]} - {b[1]:.4f} Average Daily Trips")
-    plot_file_path = r"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\Rankings New\Top "+str(n)+" Busiest Bridges.pdf"
+    plot_file_path = r"C:\Users\natal\JHU-Key-Bridge-internal\Ship Ranking Plots Updated\\Top "+str(n)+" Busiest Bridges.pdf"
     plt.savefig(plot_file_path)
     plt.close()
         
@@ -214,7 +214,7 @@ for threshold in length_thresholds:
         plt.tight_layout()
         plt.grid(axis='y', linestyle=':', color='gray', alpha=0.5, zorder=0)  
         
-        plot_file_path = r"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\Rankings New\Top "+str(n)+f" Busiest Bridges with Ship Lengths Above {threshold} meters.pdf"
+        plot_file_path = r"C:\Users\natal\JHU-Key-Bridge-internal\Ship Ranking Plots Updated\\Top "+str(n)+f" Busiest Bridges with Ship Lengths Above {threshold} meters.pdf"
         plt.savefig(plot_file_path, format='pdf')
         plt.close()
             
