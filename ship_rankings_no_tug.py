@@ -1,15 +1,14 @@
 ## Written by Natalia Dougan
-## Edited by Diran Jimenez
 
 import pandas as pd 
 import numpy as np 
 import matplotlib.pyplot as plt
 import os
 import textwrap
-#from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib.backends.backend_pdf import PdfPages
 
 # This file path should link to the data on your machine
-folder_path = r"C:\Users\natal\JHU-Key-Bridge-internal\Bridge Result Data\Filtered Data"
+folder_path = r"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\Bridge Result Data\Filtered Data"
 
 # Dictionary to store average ships per day for each bridge with no size requirement
 bridge_results = {}
@@ -26,6 +25,15 @@ for filename in os.listdir(folder_path):
         df_no_header.columns = ['MMSI', 'BaseDateTime', 'LAT', 'LON', 'SOG', 'COG', 'Heading', 'VesselName', 'IMO', 'CallSign', 'VesselType', 'Status', 'Length', 'Width', 'Draft', 'Cargo', 'TransceiverClass']
         
         df_no_header = df_no_header.copy()
+        
+        # Filter out Tug Boats
+        df_no_header['VesselType'] = pd.to_numeric(df_no_header['VesselType'], errors='coerce')
+
+        # Filter out Tug Boats
+        df_no_header = df_no_header[~df_no_header['VesselType'].isin([31, 32, 52])]
+
+        df_no_header = df_no_header.copy()
+
         # Since each trip has two rows of data, take the length of the df and divide by 2
         num_trips = ((df_no_header.shape[0])/2)
         
@@ -48,7 +56,7 @@ filtered_Bridge_results = dict(sorted(bridge_results.items(), key=lambda item: i
 Bridge_results_df = pd.DataFrame([{"Bridge": i, "Daily Trips": j[0], "Total Trips": j[1]}  for i, j in filtered_Bridge_results.items()])
 
 # Saves the results to a csv 
-Bridge_results_df.to_csv(r"C:\Users\natal\JHU-Key-Bridge-internal\Ship Ranking Plots Updated\\Trip Data for all Large Ships.csv", index=False)
+Bridge_results_df.to_csv(r"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\Rankings No Tug\Trip Data for all Large Ships.csv", index=False)
 
 # Focus on bridges that have more than 1 trip per day on average
 filtered_results = {k: v[0] for k, v in filtered_Bridge_results.items() if v[0] >= 1}
@@ -112,7 +120,7 @@ for n in [10, 25, 50]:
         #     for b in bridges_with_traffic[:50]:
         #         i += 1
         #         print(f"{i}: {b[0]} - {b[1]:.4f} Average Daily Trips")
-    plot_file_path = r"C:\Users\natal\JHU-Key-Bridge-internal\Ship Ranking Plots Updated\\Top "+str(n)+" Busiest Bridges.pdf"
+    plot_file_path = r"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\Rankings No Tug\Top "+str(n)+" Busiest Bridges.pdf"
     plt.savefig(plot_file_path)
     plt.close()
         
@@ -143,9 +151,21 @@ def process_data_for_threshold(threshold):
             
             
             df_filtered = df_no_header[df_no_header['Length'].astype(float) > threshold]
+
             
             df_filtered = df_filtered.copy()
-            
+
+            # Filter out Tug Boats
+            df_filtered['VesselType'] = pd.to_numeric(df_filtered['VesselType'], errors='coerce')
+
+            # Filter out Tug Boats
+            df_filtered = df_filtered[~df_filtered['VesselType'].isin([31, 32, 52])]
+
+            df_filtered = df_filtered.copy()
+
+
+            df_filtered = df_filtered.copy()
+
             num_trips = ((df_filtered.shape[0])/2)
             daily_trips = num_trips / (2282)
             
@@ -180,7 +200,7 @@ for threshold in length_thresholds:
         plt.figure(figsize=(20, 8))
 
         if n <= 10:
-            wrapped_labels = wrap_labels([b[0] for b in traffic[:n]], width=18)
+            wrapped_labels = wrap_labels([b[0] for b in bridges_with_traffic[:n]], width=18)
             plt.xticks(range(len(wrapped_labels)), wrapped_labels, ha='center', font='Verdana', fontsize=10)
             plt.xlabel('Bridge Names', font='Verdana', fontsize =16)
             plt.ylabel('Average Ships per Day', font='Verdana', fontsize =16)
@@ -190,7 +210,7 @@ for threshold in length_thresholds:
                 plt.bar(b[0], b[1], color='#87CEEB')
                 plt.text(b[0], b[1], f"{b[1]:.2f}", ha='center', va='bottom', font='Verdana', fontsize=12)
         elif n <= 25: 
-            wrapped_labels = wrap_labels([b[0] for b in traffic[:n]], width=20)
+            wrapped_labels = wrap_labels([b[0] for b in bridges_with_traffic[:n]], width=20)
             bar_positions = np.arange(n)
             plt.bar(bar_positions, [b[1] for b in traffic[:n]], color='#87CEEB')
             plt.xticks(bar_positions, wrapped_labels, rotation=45, ha='right', font='Verdana', fontsize=10)
@@ -214,7 +234,7 @@ for threshold in length_thresholds:
         plt.tight_layout()
         plt.grid(axis='y', linestyle=':', color='gray', alpha=0.5, zorder=0)  
         
-        plot_file_path = r"C:\Users\natal\JHU-Key-Bridge-internal\Ship Ranking Plots Updated\\Top "+str(n)+f" Busiest Bridges with Ship Lengths Above {threshold} meters.pdf"
+        plot_file_path = r"C:\Users\natal\OneDrive\Desktop\Key_bridge_filter_plot\Rankings No Tug\Top "+str(n)+f" Busiest Bridges with Ship Lengths Above {threshold} meters.pdf"
         plt.savefig(plot_file_path, format='pdf')
         plt.close()
             
@@ -226,4 +246,4 @@ for threshold in length_thresholds:
             #         i += 1
             #         print(f"{i}. {b[0]} - {b[1]:.4f} Average Daily Trips")
                     
-    print(f"Plot saved to {plot_file_path}.pdf saved") 
+    print(f"Plot saved to {plot_file_path}.pdf saved")
