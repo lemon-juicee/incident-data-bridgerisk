@@ -4,63 +4,39 @@
 This repository contains data, analysis, and visualizations related to bridge rankings and traffic data for various ship sizes and bridge locations. The project aims to provide insights into bridge usage patterns and rankings based on different criteria.
 
 ## Repository Structure
-```
-.
-├── Bridge Rankings and Plots/
-│   ├── Bridge Results/
-│   │   ├── Explanation of Adversely Affected by Bridge Project.pdf
-│   │   ├── Filtered Data/
-│   │   ├── Plots/
-│   │   ├── Plots for Important Bridges/
-│   │   ├── Rankings/
-│   │   └── ReadMe.pdf
-│   ├── New Bridge Rankings and Plots/
-│   │   ├── Rankings/
-│   │   │   ├── Bridge Rankings for All Large Ships.pdf
-│   │   │   ├── Bridge Rankings for Ships above 180 m.pdf
-│   │   │   ├── Bridge Rankings for Ships above 215 m.pdf
-│   │   │   ├── Bridge Rankings for Ships above 250 m.pdf
-│   │   │   ├── Bridge Rankings for Ships above 275 m.pdf
-│   │   │   ├── Bridge Rankings for Ships above 300 m.pdf
-│   │   │   ├── Trip Data All Large Ships.csv
-│   │   │   ├── Trip Data for Ships Larger than 180 m.csv
-│   │   │   ├── Trip Data for Ships Larger than 215 m.csv
-│   │   │   ├── Trip Data for Ships Larger than 250 m.csv
-│   │   │   ├── Trip Data for Ships Larger than 275 m.csv
-│   │   │   └── Trip Data for Ships Larger than 300 m.csv
-│   └── New Histograms Plots for all Bridges/
-│       └── Plots and Counts/
-│           ├── [Individual Bridge Name] counts.csv
-│           └── [Individual Bridge Name] plots.pdf
-```
 
-### Contents Description
- **Bridge Results**
- 
-Contains the main analysis results, including explanations, filtered data, and various plots. The ReadMe.pdf in this folder may provide additional project-specific information.
+### Main Branch
 
- **New Bridge Rankings and Plots**
- 
-- Rankings: Includes PDF files with bridge rankings for different ship size categories (180m, 215m, 250m, 275m, 300m).
-- Trip Data: CSV files containing trip data for ships of various sizes.
+The main branch contains the following folders:
+ - "Initial Filtering Code" -> Contains code that conducts initial filtering of the Marine Cadastre AIS database, removing all ships that are not of interest to our project and retaining everything else. Also contains corresponding data files.
+ - "Geographical Filtering Code" -> Contains code that checks for intersections of ship tracks with a geographical boundary and corresponding data files.
+ - "Bridge Intersection Code" -> Contains code that checks for intersections of ship tracks with bridges and corresponding data files.
+ - "Aberrancy Code" -> Contains code that counts the frequency of ship aberrancy and corresponding data files.
+ - "Plots" -> Contains code that generates plots and corresponding data files.
 
-**New Histograms and Plots for all Bridges**
+NOTE: Adding content to the Main branch requires the permission of Promit Chakroborty (pchakro1@jhu.edu)
 
-Plots and Counts: Contains individual CSV files with count data and PDF files with plots for specific bridges.
+### Archive
 
-**Data Files**
+Contains all files from the Summer of 2024.
 
-- CSV Files: Contain raw data for bridge counts and trip information.
-- PDF Files: Include visualizations, rankings, and analysis results.
+### Instructions for New Branches
+
+Please follow the below instructions for creating new branches:
+ - Naming convention to be followed by ALL NEW BRANCHES: "Date_CreatorName_IntendedUse"
+ - Do not delete any branches, even if you created them. Deleting a branch requires the permission of Promit Chakroborty (pchakro1@jhu.edu)
+ - Only create branches for the following reasons:
+   - To work on new code capabilities
+   - To share code with team members
 
 **Usage**
 
 To use this data:
 
 1. Navigate to the desired folder based on the analysis you're interested in.
-2. For rankings, refer to the PDF files in the Rankings folder.
-3. For raw data, check the CSV files in the respective folders.
-4. To view plots and histograms for specific bridges, go to the New Histograms and Plots for all Bridges folder.
+2. For code to accomplish a specific task, refer to the PY files in the corresponding folders.
+3. For plots, refer to the PDF files in the Plots folder.
+4. For raw data, check the CSV files in the respective folders.
    
 ## Contributing
 If you'd like to contribute to this project, please follow these steps:
