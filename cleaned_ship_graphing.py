@@ -215,49 +215,41 @@ def incident_graph(path, MMSI, time, plot_together=False):
 
 incident_graph('2018_12_31', '367552070', '23:20:00')
 plt.title('CHARLES HUAN, Allision - 12/31/2018')
-plt.tight_layout()
 plt.savefig('graphics/CHARLES HUAN, Allision.png')
 plt.clf()
 
 incident_graph('2019_01_03', '369371000', '04:00:00')
 plt.title('RONNIE MURPH, Loss of Propulsion - 01/03/2019')
-plt.tight_layout()
 plt.savefig('graphics/RONNIE MURPH, Loss of Propulsion.png')
 plt.clf()
 
 incident_graph('2019_01_14', '367638020', '02:20:00')
 plt.title('RANDY ECKSTEIN, Allision - 01/14/2019')
-plt.tight_layout()
 plt.savefig('graphics/RANDY ECKSTEIN, Allision.png')
 plt.clf()
 
 incident_graph('2021_01_02', '366254000', '04:10:00')
 plt.title('KAPENA JACK YOUNG, Collision - 01/02/2021')
-plt.tight_layout()
 plt.savefig('graphics/KAPENA JACK YOUNG, Collision .png')
 plt.clf()
 
 incident_graph('2021_01_07', '477288000', '07:22:00')
 plt.title('OCEAN PRINCESS, Allision - 01/07/2021')
-plt.tight_layout()
 plt.savefig('graphics/OCEAN PRINCESS, Allision.png')
 plt.clf()
 
 incident_graph('2022_01_05', '636017782', '00:05:00')
 plt.title('ORPHEUS, Loss of Propulsion - 01/05/2022')
-plt.tight_layout()
 plt.savefig('graphics/ORPHEUS, Loss of Propulsion.png')
 plt.clf()
 
 incident_graph('2022_01_06', '367103180', '07:20:00')
 plt.title('JACKSON PLATTE, Allision - 01/06/2022')
-plt.tight_layout()
 plt.savefig('graphics/JACKSON PLATTE, Allision.png')
 plt.clf()
 
 incident_graph('2022_01_15', '366973130', '05:00:00')
 plt.title('MALAGA, Loss of Propulsion - 01/15/2022')
-plt.tight_layout()
 plt.savefig('graphics/MALAGA, Loss of Propulsion.png')
 plt.clf()
 
