@@ -1,0 +1,39 @@
+CHARLES HUAN, Allision - 12/31/2018
+    367552070
+    2018_12_31
+    23:20:00
+
+RONNIE MURPH, Loss of Propulsion - 01/03/2019
+    369371000
+    2019_01_03
+    04:00:00
+
+RANDY ECKSTEIN, Allision - 01/14/2019
+    367638020
+    2019_01_14
+    02:20:00
+
+KAPENA JACK YOUNG, Collision - 01/02/2021
+    366254000
+    2021_01_02
+    04:10:00
+
+OCEAN PRINCESS, Allision - 01/07/2021
+    477288000
+    2021_01_07
+    07:22:00
+
+ORPHEUS, Loss of Propulsion - 01/05/2022
+    636017782
+    2022_01_05
+    00:05:00
+
+JACKSON PLATTE, Allision - 01/06/2022
+    367103180
+    2022_01_06
+    07:20:00
+
+MALAGA, Loss of Propulsion - 01/15/2022
+    366973130
+    2022_01_15
+    05:00:00
