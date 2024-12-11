@@ -78,6 +78,7 @@ def Generic_Mask_Filter(file_path, MMSI=False, BaseDateTime=False, LAT=False, LO
 
 # Code from here written by Lemon Doroshow
 def closest(lst, K):
+     """Finds the closest value in a list (lst) to the given value (K)"""
      lst = np.asarray(lst)
      idx = (np.abs(lst - K)).argmin()
      return idx
@@ -119,6 +120,8 @@ def incident_graph(path, MMSI, time, plot_together=False):
         type = str (returns an empty dataframe if MMSI is entered as an int or float)
     time = the time of the event, used to plot, vertical line on the graph
         type = string, format 'HH:MM:SS'
+    plot_togeter = Whether to plot the lat-lon colormap and the statuses as well as the angle difference, False by default
+        type = Boolean
     Returns:
     matplotlib figure to be called with plt.show() or plt.savefig()
     """
