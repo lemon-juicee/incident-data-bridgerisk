@@ -78,26 +78,54 @@ def Generic_Mask_Filter(file_path, MMSI=False, BaseDateTime=False, LAT=False, LO
 
 # Code from here written by Lemon Doroshow
 def closest(lst, K):
-     """Finds the closest value in a list (lst) to the given value (K)"""
-     lst = np.asarray(lst)
-     idx = (np.abs(lst - K)).argmin()
-     return idx
+    """
+    closest() finds the closest value in a list to the given value
+    Parameters:
+    lst = the input list to search through
+        type = list
+    K = the value to find a list value closest to
+        type = int
+    Returns:
+    idx = the closest value in lst to K
+        type = depends on the members of lst
+    """
+    
+    lst = np.asarray(lst)
+    idx = (np.abs(lst - K)).argmin()
+    return idx
 
 def pos_angle(angle):
-    """Converts angles from negative degrees to positive degrees while maintaining the same magnitude and orientation"""
+    """
+    pos_angle() converts angles from negative degrees to positive degrees while maintaining the same magnitude and orientation
+    Parameters:
+    angle = the input angle
+        type = int
+    Returns:
+    angle = the angle, adjusted to be positive (as low as possible)
+        type = int
+    """
+
     while angle < 0:
         angle = angle + 360
     return angle
 
-def one_eighty_angle(angle):
-    '''Converts angles (180,360] to [0,180]'''
-    while angle > 180:
-        angle = 360 - angle
-    return angle
-
 def true_difference(angle1, angle2):
-    """Creates a difference of two angles where a positive difference means angle 2 is to the left of angle1 and a negative difference means angle2 is to the right of angle1"""
-    """pos_angle() MUST be used on both angles beforehand"""
+    """
+    Creates a difference of two angles as follows:
+    If 0 < true_difference < 180, then angle1 is clockwise of angle2, measured by the interior angle
+    If -180 < true_difference < 0, then angle1 is counterclockwise of angle2, measured by itnerior angle
+    Angles with a difference of 0, -180, or 180 are left unchanged
+    It is recommended for pos_angle() to be used on both angles beforehand
+    Parameters:
+    angle1 = the first angle, according to the rules above
+        type = int
+    angle2 = the second angle, according to the rules above
+        type = int
+    Returns:
+    diff = the difference of the angles as described above
+        type = int
+    """
+
     if angle1-angle2 > 180:
         diff = (-1)*(360 - angle1 + angle2)
     if angle1-angle2 < -180:
@@ -108,6 +136,8 @@ def true_difference(angle1, angle2):
         diff = 180
     if angle1-angle2 == -180:
         diff = -180
+    if angle1-angle2 == 0:
+        diff = 0
     return diff
 
 def incident_graph(path, MMSI, time, plot_together=False):
@@ -128,7 +158,7 @@ def incident_graph(path, MMSI, time, plot_together=False):
 
     # Import data into a dataframe, filtering for MMSI, and removing Heading = 511.0 which is a "default" and meaningless value
     data = Generic_Mask_Filter(("data/AIS_" + path + '.csv'), MMSI=[MMSI])
-    data_511 = data[data['Heading'] == 511.0]
+    data_511 = data[data['Heading'] == 511.0] # If Heading == 511.0, then there is no data available at that broadcast point (511.0 is the default value)
     data = data[data['Heading'] != 511.0]
 
     # Adjust times and dates to fit YYYY-MM-DD and HH:MM:SS
@@ -136,13 +166,11 @@ def incident_graph(path, MMSI, time, plot_together=False):
     hours = [t.hour for t in times_raw]
     minutes = [t.minute for t in times_raw]
     seconds = [t.second for t in times_raw]
-    # times_adjusted = [f"{h:02}:{m:02}:{s:02}" for h, m, s in zip(hours, minutes, seconds)]
     times_adjusted = [h + m/60 + s/3600 for h, m, s in zip(hours, minutes, seconds)]
     times_raw_511 = pd.to_datetime([strings for strings in data_511["BaseDateTime"]]).time
     hours_511 = [t.hour for t in times_raw_511]
     minutes_511 = [t.minute for t in times_raw_511]
     seconds_511 = [t.second for t in times_raw_511]
-    # times_adjusted_511 = [f"{h:02}:{m:02}:{s:02}" for h, m, s in zip(hours_511, minutes_511, seconds_511)]
     times_adjusted_511 = [h + m/60 + s/3600 for h, m, s in zip(hours_511, minutes_511, seconds_511)]
     
     # Adjust incident time to fit HH:MM:SS
@@ -150,7 +178,6 @@ def incident_graph(path, MMSI, time, plot_together=False):
     time_hour= time.hour
     time_minute = time.minute
     time_second  = time.second
-    # time_final=f"{time_hour:02}:{time_minute:02}:{time_second:02}" # string time
     time_final = time_hour + time_minute/60 + time_second/3600
 
     # Extract status and angle difference data  
