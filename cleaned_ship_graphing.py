@@ -213,6 +213,15 @@ def incident_graph(path, MMSI, time, plot_together=False):
         # Add space between plots
         plt.subplots_adjust(wspace=0.5, hspace=0.5)
 
+def stddev_anglemap(path, MMSI):
+    data = Generic_Mask_Filter(("data/AIS_" + path + '.csv'), MMSI=[MMSI])
+    data = data[data['Heading'] != 511.0]
+    angle_difference = [true_difference(pos_angle(cog), pos_angle(heading)) for cog, heading in zip(data['COG'], data['Heading'].astype(np.float64))]
+    plt.hist(angle_difference, bins=25, weights=np.ones_like(angle_difference) / np.size(angle_difference))
+    
+"""
+Angle difference graph generation code
+-------------------------------------------------------
 incident_graph('2018_12_31', '367552070', '23:20:00')
 plt.title('CHARLES HUAN, Allision - 12/31/2018')
 plt.savefig('graphics/CHARLES HUAN, Allision.png')
@@ -252,7 +261,7 @@ incident_graph('2022_01_15', '366973130', '05:00:00')
 plt.title('MALAGA, Loss of Propulsion - 01/15/2022')
 plt.savefig('graphics/MALAGA, Loss of Propulsion.png')
 plt.clf()
-
+"""
 
 
 
