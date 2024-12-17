@@ -98,6 +98,7 @@ def csvgen(path, MMSI, output=False):
     # Convert data to pd.DataFrame
     mapped_data = {'longitude':data['LON'], 'latitude':data['LAT'], 'time':times_adjusted}
     mapped_df = pd.DataFrame(mapped_data)
+    mapped_df = mapped_df.sort_values('time')
 
     # Export csv file
     mapped_df.to_csv(path_or_buf=output, index=False)
