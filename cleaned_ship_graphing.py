@@ -295,6 +295,14 @@ def change_graph(path, MMSI, time, measurement):
     time_second  = time.second
     time_final = time_hour + time_minute/60 + time_second/3600
 
+    # Set up subplots
+    fig, ax = plt.subplots()
+
+    # Format axes
+    ax.xaxis.set_major_locator(ticker.LinearLocator(8))
+    ax.tick_params(axis='x',labelrotation=45)
+    ax.set_xlabel('Time (UTC)')
+
     # Heading DF construction
     if measurement == "Heading":
 
@@ -313,6 +321,7 @@ def change_graph(path, MMSI, time, measurement):
             i += 1
         mapped_data = {'time':times_adjusted, 'change':change}
         mapped_df = pd.DataFrame(mapped_data)
+        ax.set_ylabel('Change in Heading (deg)')
 
     # COG DF construction
     elif measurement == 'COG':
@@ -331,6 +340,7 @@ def change_graph(path, MMSI, time, measurement):
             i += 1
         mapped_data = {'time':times_adjusted, 'change':change}
         mapped_df = pd.DataFrame(mapped_data)
+        ax.set_ylabel('Change in COG (deg)')
 
     # Angle difference DF construction
     elif measurement == 'Difference':
@@ -350,20 +360,12 @@ def change_graph(path, MMSI, time, measurement):
             i += 1
         mapped_data = {'time':times_adjusted, 'change':change}
         mapped_df = pd.DataFrame(mapped_data)
-    
+        ax.set_ylabel('Change in Angle Difference (deg)')
+
     # Raise an exception if the measurements argument is formatted incorrectly
     else:
         raise Exception("Please choose COG, Heading, or Difference! (case sensitive)")
     
-    # Set up subplots
-    fig, ax = plt.subplots()
-
-    # Format axes
-    ax.xaxis.set_major_locator(ticker.LinearLocator(8))
-    ax.tick_params(axis='x',labelrotation=45)
-    ax.set_xlabel('Time (UTC)')
-    ax.set_ylabel('Angle Difference (deg)')
-
     # Plot scatterplot of chosen changes along with a vertical line at the time of incident
     ax.scatter(mapped_df['time'], mapped_df['change'])
     ax.axvline(time_final)
@@ -410,4 +412,53 @@ incident_graph('2022_01_15', '366973130', '05:00:00')
 plt.title('MALAGA, Loss of Propulsion - 01/15/2022')
 plt.savefig('graphics/angle_diff/MALAGA, Loss of Propulsion, angle diff.png')
 plt.clf()
+"""
+
+"""
+Heading change graph generation code
+-------------------------------------------------------
+func_options = ['Heading', 'COG', 'Difference']
+string_options = ['change in heading', 'change in COG', 'change in difference']
+path_options = ['change_Heading/', 'change_COG/', 'change_Difference/']
+
+for (f, s, p) in zip(func_options, string_options, path_options):
+    change_graph('2018_12_31', '367552070', '23:20:00', f)
+    plt.title('CHARLES HUAN, Allision - 12/31/2018')
+    plt.savefig('graphics/' + p + 'CHARLES HUAN, Allision, ' + s + '.png')
+    plt.clf()
+
+    change_graph('2019_01_03', '369371000', '04:00:00', f)
+    plt.title('RONNIE MURPH, Loss of Propulsion - 01/03/2019')
+    plt.savefig('graphics/' + p + 'RONNIE MURPH, Loss of Propulsion, ' + s + '.png')
+    plt.clf()
+
+    change_graph('2019_01_14', '367638020', '02:20:00', f)
+    plt.title('RANDY ECKSTEIN, Allision - 01/14/2019')
+    plt.savefig('graphics/' + p + 'RANDY ECKSTEIN, Allision, ' + s + '.png')
+    plt.clf()
+
+    change_graph('2021_01_02', '366254000', '04:10:00', f)
+    plt.title('KAPENA JACK YOUNG, Collision - 01/02/2021')
+    plt.savefig('graphics/' + p + 'KAPENA JACK YOUNG, Collision, ' + s + '.png')
+    plt.clf()
+
+    change_graph('2021_01_07', '477288000', '07:22:00', f)
+    plt.title('OCEAN PRINCESS, Allision - 01/07/2021')
+    plt.savefig('graphics/' + p + 'OCEAN PRINCESS, Allision, ' + s + '.png')
+    plt.clf()
+
+    change_graph('2022_01_05', '636017782', '00:05:00', f)
+    plt.title('ORPHEUS, Loss of Propulsion - 01/05/2022')
+    plt.savefig('graphics/' + p + 'ORPHEUS, Loss of Propulsion, ' + s + '.png')
+    plt.clf()
+
+    change_graph('2022_01_06', '367103180', '07:20:00', f)
+    plt.title('JACKSON PLATTE, Allision - 01/06/2022')
+    plt.savefig('graphics/' + p + 'JACKSON PLATTE, Allision, ' + s + '.png')
+    plt.clf()
+
+    change_graph('2022_01_15', '366973130', '05:00:00', f)
+    plt.title('MALAGA, Loss of Propulsion - 01/15/2022')
+    plt.savefig('graphics/' + p + 'MALAGA, Loss of Propulsion, ' + s + '.png')
+    plt.clf()
 """
