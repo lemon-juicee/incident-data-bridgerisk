@@ -415,7 +415,7 @@ plt.clf()
 """
 
 """
-Heading change graph generation code
+Change graph generation code
 -------------------------------------------------------
 func_options = ['Heading', 'COG', 'Difference']
 string_options = ['change in heading', 'change in COG', 'change in difference']
