@@ -457,8 +457,5 @@ for (f, s, p) in zip(func_options, string_options, path_options):
     plt.savefig('graphics/' + p + 'JACKSON PLATTE, Allision, ' + s + '.png')
     plt.clf()
 
-    change_graph('2022_01_15', '366973130', '05:00:00', f)
-    plt.title('MALAGA, Loss of Propulsion - 01/15/2022')
-    plt.savefig('graphics/' + p + 'MALAGA, Loss of Propulsion, ' + s + '.png')
-    plt.clf()
+    # MALAGA seems to have some issues with change graphs due to a lack of headings - we will leave it out for now
 """
