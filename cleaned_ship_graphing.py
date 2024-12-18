@@ -89,7 +89,7 @@ def closest(lst, K):
     idx = the closest value in lst to K
         type = depends on the members of lst
     """
-    
+
     lst = np.asarray(lst)
     idx = (np.abs(lst - K)).argmin()
     return idx
@@ -259,9 +259,115 @@ def stddev_anglemap(path, MMSI):
     # Calculate angle difference
     angle_difference = [true_difference(pos_angle(cog), pos_angle(heading)) for cog, heading in zip(data['COG'], data['Heading'].astype(np.float64))]
     
-    # Plot frequency histogram (weights) with 25 bins (bins)
+    # Plot frequency histogram (as denoted by weights) with 25 bins
     plt.hist(angle_difference, bins=25, weights=np.ones_like(angle_difference) / np.size(angle_difference))
+
+def change_graph(path, MMSI, time, measurement):
+    """
+    change_graph() shows a plot of the change in a certain variable of a ship's movement at each broadcast point
+    Parameters:
+    path = The date of an AIS csv file; ex: for the file AIS_2018_12_31.csv, path = '2018_12_31' in YYYY_MM_DD format
+        type = str
+    MMSI = The MMSI of the ship in question
+        type = str (returns an empty dataframe if MMSI is entered as an int or float)
+    time = the time of the event, used to plot, vertical line on the graph
+        type = string, format 'HH:MM:SS'
+    measurement = which variable to plot the change of
+        type = string, either 'COG', 'Heading', or 'Difference' (case sensitive)
+    Returns:
+    matplotlib figure to be called with plt.show() or plt.savefig()
+    """
+
+    # Import AIS data
+    data = Generic_Mask_Filter(("data/AIS_" + path + '.csv'), MMSI=[MMSI])
+
+    # Adjust AIS data times
+    times_raw = pd.to_datetime([strings for strings in data["BaseDateTime"]]).time
+    hours = [t.hour for t in times_raw]
+    minutes = [t.minute for t in times_raw]
+    seconds = [t.second for t in times_raw]
+    times_adjusted = [h + m/60 + s/3600 for h, m, s in zip(hours, minutes, seconds)]
+
+    # Adjust incident time
+    time = pd.to_datetime(time)
+    time_hour= time.hour
+    time_minute = time.minute
+    time_second  = time.second
+    time_final = time_hour + time_minute/60 + time_second/3600
+
+    # Heading DF construction
+    if measurement == "Heading":
+
+        # Remove null values and create sorted DF
+        data = data[data['Heading'] != 511.0]
+        mapped_data = {'time':times_adjusted, 'Heading':data['Heading']}
+        mapped_df = pd.DataFrame(mapped_data)
+        mapped_df = mapped_df.sort_values('time')
+        headings = mapped_df['Heading'].tolist()
+
+        # Create a new dataframe with the change in heading calculated at each point - the initial point is equal to zero
+        change = [0]
+        i = 1
+        while i < len(headings):
+            change.append(headings[i] - headings[i-1])
+            i += 1
+        mapped_data = {'time':times_adjusted, 'change':change}
+        mapped_df = pd.DataFrame(mapped_data)
+
+    # COG DF construction
+    elif measurement == 'COG':
+
+        # Create sorted DF
+        mapped_data = {'time':times_adjusted, 'COG':data['COG']}
+        mapped_df = pd.DataFrame(mapped_data)
+        mapped_df = mapped_df.sort_values('time')
+        cogs = mapped_df['COG'].tolist()
+
+        # Create a new dataframe with the change in COG calculated at each point - initial is equal to zero
+        change = [0]
+        i = 1
+        while i < len(cogs):
+            change.append(cogs[i] - cogs[i-1])
+            i += 1
+        mapped_data = {'time':times_adjusted, 'change':change}
+        mapped_df = pd.DataFrame(mapped_data)
+
+    # Angle difference DF construction
+    elif measurement == 'Difference':
+
+        # Calculate angle differences and create sorted dataframe
+        angle_difference = [true_difference(pos_angle(cog), pos_angle(heading)) for cog, heading in zip(data['COG'], data['Heading'].astype(np.float64))]
+        mapped_data = {'time':times_adjusted, 'difference':angle_difference}
+        mapped_df = pd.DataFrame(mapped_data)
+        mapped_df = mapped_df.sort_values('time')
+        diffs = mapped_df['difference'].tolist()
+
+        # Create new dataframe with the change in angle difference at each point - initial is equal to zero
+        change = [0]
+        i = 1
+        while i < len(diffs):
+            change.append(diffs[i] - diffs[i-1])
+            i += 1
+        mapped_data = {'time':times_adjusted, 'change':change}
+        mapped_df = pd.DataFrame(mapped_data)
     
+    # Raise an exception if the measurements argument is formatted incorrectly
+    else:
+        raise Exception("Please choose COG, Heading, or Difference! (case sensitive)")
+    
+    # Set up subplots
+    fig, ax = plt.subplots()
+
+    # Format axes
+    ax.xaxis.set_major_locator(ticker.LinearLocator(8))
+    ax.tick_params(axis='x',labelrotation=45)
+    ax.set_xlabel('Time (UTC)')
+    ax.set_ylabel('Angle Difference (deg)')
+
+    # Plot scatterplot of chosen changes along with a vertical line at the time of incident
+    ax.scatter(mapped_df['time'], mapped_df['change'])
+    ax.axvline(time_final)
+
 """
 Angle difference graph generation code
 -------------------------------------------------------
@@ -305,8 +411,3 @@ plt.title('MALAGA, Loss of Propulsion - 01/15/2022')
 plt.savefig('graphics/MALAGA, Loss of Propulsion.png')
 plt.clf()
 """
-
-
-
-
-
