@@ -226,6 +226,7 @@ def incident_graph(path, MMSI, time, plot_together=False):
         ax.scatter(mapped_df['time'], mapped_df['angle_difference'])
         ax.scatter(mapped_df_511['time'], mapped_df_511['angle_difference'], color='red')
         ax.axvline(time_final)
+        fig.tight_layout()
 
     if plot_together:
         # Set up incident time for color map
@@ -372,3 +373,63 @@ def change_graph(path, MMSI, time, measurement):
     # Plot scatterplot of chosen changes along with a vertical line at the time of incident
     ax.scatter(mapped_df['time'], mapped_df['change'])
     ax.axvline(time_final)
+"""
+incident_graph('2019_01_08', '366995430', '02:20:00')
+plt.title('ZEUS, Allision - 01/08/2019')
+plt.savefig('graphics/ZEUS, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2019_01_24', '366998110', '19:30:00')
+plt.title('STEVE RICHOUX, Allision - 01/24/2019')
+plt.savefig('graphics/STEVE RICHOUX, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2019_02_17', '367638130', '20:25:00')
+plt.title('JOSEPH PATRICK ECKSTEIN, Allision - 02/17/2019')
+plt.savefig('graphics/JOSEPH PATRICK ECKSTEIN, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2019_02_12', '367641610', '16:15:00')
+plt.title('PAUL MCGINNESS, Allision - 02/12/2019')
+plt.savefig('graphics/PAUL MCGINNESS, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2021_03_01', '367690990', '21:15:00')
+plt.title('ANGELIA B, Allision - 03/01/2021')
+plt.savefig('graphics/ANGELIA B, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2021_04_10', '338257000', '22:43:00')
+plt.title('BROOKS MCCALL, Allision - 04/10/2021')
+plt.savefig('graphics/BROOKS MCCALL, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2021_06_10', '367781550', '18:05:00')
+plt.title('GARLAND GASPARD, Allision - 06/10/2021')
+plt.savefig('graphics/GARLAND GASPARD, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2021_08_17', '368142750', '01:18:00')
+plt.title('NYQUIST, Allision - 08/17/2021')
+plt.savefig('graphics/NYQUIST, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2022_01_24', '366946840', '00:20:00')
+plt.title('MEAGHAN MARIE, Allision - 01/24/2022')
+plt.savefig('graphics/MEAGHAN MARIE, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2023_01_04', '368217370', '23:30:00')
+plt.title('MISS TERRI, Allision - 01/04/2023')
+plt.savefig('graphics/MISS TERRI, Allision.png', bbox_inches='tight')
+plt.clf()
+"""
+incident_graph('2023_02_04', '367656820', '01:07:00')
+plt.title('BRIANNA ELIZABETH, Allision - 02/03/2023')
+plt.savefig('graphics/BRIANNA ELIZABETH, Allision.png', bbox_inches='tight')
+plt.clf()
+
+incident_graph('2023_03_22', '368236120', '04:10:00')
+plt.title('JAMES E JACKSON, Allision - 03/21/2023')
+plt.savefig('graphics/JAMES E JACKSON, Allision.png', bbox_inches='tight')
+plt.clf()
