@@ -373,7 +373,7 @@ def change_graph(path, MMSI, time, measurement):
     # Plot scatterplot of chosen changes along with a vertical line at the time of incident
     ax.scatter(mapped_df['time'], mapped_df['change'])
     ax.axvline(time_final)
-"""
+
 incident_graph('2019_01_08', '366995430', '02:20:00')
 plt.title('ZEUS, Allision - 01/08/2019')
 plt.savefig('graphics/ZEUS, Allision.png', bbox_inches='tight')
@@ -423,7 +423,7 @@ incident_graph('2023_01_04', '368217370', '23:30:00')
 plt.title('MISS TERRI, Allision - 01/04/2023')
 plt.savefig('graphics/MISS TERRI, Allision.png', bbox_inches='tight')
 plt.clf()
-"""
+
 incident_graph('2023_02_04', '367656820', '01:07:00')
 plt.title('BRIANNA ELIZABETH, Allision - 02/03/2023')
 plt.savefig('graphics/BRIANNA ELIZABETH, Allision.png', bbox_inches='tight')
