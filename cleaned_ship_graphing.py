@@ -156,10 +156,11 @@ def incident_graph(path, MMSI, time, plot_together=False):
     matplotlib figure to be called with plt.show() or plt.savefig()
     """
 
-    # Import data into a dataframe, filtering for MMSI, and removing Heading = 511.0 which is a "default" and meaningless value
+    # Import data into a dataframe, filtering for MMSI; removing Heading = 511.0 and adjusting COG according to https://coast.noaa.gov/data/marinecadastre/ais/faq.pdf
     data = Generic_Mask_Filter(("data/AIS_" + path + '.csv'), MMSI=[MMSI])
-    data_511 = data[data['Heading'] == 511.0] # If Heading == 511.0, then there is no data available at that broadcast point (511.0 is the default value)
-    data = data[data['Heading'] != 511.0]
+    data_511 = data[(data['Heading'] == 511.0) | (data['COG'] == 360.0)]
+    data = data[(data['Heading'] != 511.0) & (data['COG'] != 360.0)]
+    data['COG'] = [cog + 409.6 if cog < 0 else cog for cog in data['COG']]
 
     # Adjust times and dates to fit YYYY-MM-DD and HH:MM:SS
     times_raw = pd.to_datetime([strings for strings in data["BaseDateTime"]]).time
@@ -254,7 +255,7 @@ def stddev_anglemap(path, MMSI):
 
     # Import data from csv and filter out null heading values
     data = Generic_Mask_Filter(("data/AIS_" + path + '.csv'), MMSI=[MMSI])
-    data = data[data['Heading'] != 511.0]
+    data = data[(data['Heading'] != 511.0) & (data['COG'] != 360.0)]
 
     # Calculate angle difference
     angle_difference = [true_difference(pos_angle(cog), pos_angle(heading)) for cog, heading in zip(data['COG'], data['Heading'].astype(np.float64))]
@@ -327,6 +328,7 @@ def change_graph(path, MMSI, time, measurement):
     elif measurement == 'COG':
 
         # Create sorted DF
+        data = data[data['COG'] != 360.0]
         mapped_data = {'time':times_adjusted, 'COG':data['COG']}
         mapped_df = pd.DataFrame(mapped_data)
         mapped_df = mapped_df.sort_values('time')
@@ -346,6 +348,7 @@ def change_graph(path, MMSI, time, measurement):
     elif measurement == 'Difference':
 
         # Calculate angle differences and create sorted dataframe
+        data = data[(data['Heading'] != 511.0) & (data['COG'] != 360.0)]
         angle_difference = [true_difference(pos_angle(cog), pos_angle(heading)) for cog, heading in zip(data['COG'], data['Heading'].astype(np.float64))]
         mapped_data = {'time':times_adjusted, 'difference':angle_difference}
         mapped_df = pd.DataFrame(mapped_data)
@@ -369,93 +372,3 @@ def change_graph(path, MMSI, time, measurement):
     # Plot scatterplot of chosen changes along with a vertical line at the time of incident
     ax.scatter(mapped_df['time'], mapped_df['change'])
     ax.axvline(time_final)
-
-"""
-Angle difference graph generation code
--------------------------------------------------------
-incident_graph('2018_12_31', '367552070', '23:20:00')
-plt.title('CHARLES HUAN, Allision - 12/31/2018')
-plt.savefig('graphics/angle_diff/CHARLES HUAN, Allision, angle diff.png')
-plt.clf()
-
-incident_graph('2019_01_03', '369371000', '04:00:00')
-plt.title('RONNIE MURPH, Loss of Propulsion - 01/03/2019')
-plt.savefig('graphics/angle_diff/RONNIE MURPH, Loss of Propulsion, angle diff.png')
-plt.clf()
-
-incident_graph('2019_01_14', '367638020', '02:20:00')
-plt.title('RANDY ECKSTEIN, Allision - 01/14/2019')
-plt.savefig('graphics/angle_diff/RANDY ECKSTEIN, Allision, angle diff.png')
-plt.clf()
-
-incident_graph('2021_01_02', '366254000', '04:10:00')
-plt.title('KAPENA JACK YOUNG, Collision - 01/02/2021')
-plt.savefig('graphics/angle_diff/KAPENA JACK YOUNG, Collision, angle diff.png')
-plt.clf()
-
-incident_graph('2021_01_07', '477288000', '07:22:00')
-plt.title('OCEAN PRINCESS, Allision - 01/07/2021')
-plt.savefig('graphics/angle_diff/OCEAN PRINCESS, Allision, angle diff.png')
-plt.clf()
-
-incident_graph('2022_01_05', '636017782', '00:05:00')
-plt.title('ORPHEUS, Loss of Propulsion - 01/05/2022')
-plt.savefig('graphics/angle_diff/ORPHEUS, Loss of Propulsion, angle diff.png')
-plt.clf()
-
-incident_graph('2022_01_06', '367103180', '07:20:00')
-plt.title('JACKSON PLATTE, Allision - 01/06/2022')
-plt.savefig('graphics/angle_diff/JACKSON PLATTE, Allision, angle diff.png')
-plt.clf()
-
-incident_graph('2022_01_15', '366973130', '05:00:00')
-plt.title('MALAGA, Loss of Propulsion - 01/15/2022')
-plt.savefig('graphics/angle_diff/MALAGA, Loss of Propulsion, angle diff.png')
-plt.clf()
-"""
-
-"""
-Change graph generation code
--------------------------------------------------------
-func_options = ['Heading', 'COG', 'Difference']
-string_options = ['change in heading', 'change in COG', 'change in difference']
-path_options = ['change_Heading/', 'change_COG/', 'change_Difference/']
-
-for (f, s, p) in zip(func_options, string_options, path_options):
-    change_graph('2018_12_31', '367552070', '23:20:00', f)
-    plt.title('CHARLES HUAN, Allision - 12/31/2018')
-    plt.savefig('graphics/' + p + 'CHARLES HUAN, Allision, ' + s + '.png')
-    plt.clf()
-
-    change_graph('2019_01_03', '369371000', '04:00:00', f)
-    plt.title('RONNIE MURPH, Loss of Propulsion - 01/03/2019')
-    plt.savefig('graphics/' + p + 'RONNIE MURPH, Loss of Propulsion, ' + s + '.png')
-    plt.clf()
-
-    change_graph('2019_01_14', '367638020', '02:20:00', f)
-    plt.title('RANDY ECKSTEIN, Allision - 01/14/2019')
-    plt.savefig('graphics/' + p + 'RANDY ECKSTEIN, Allision, ' + s + '.png')
-    plt.clf()
-
-    change_graph('2021_01_02', '366254000', '04:10:00', f)
-    plt.title('KAPENA JACK YOUNG, Collision - 01/02/2021')
-    plt.savefig('graphics/' + p + 'KAPENA JACK YOUNG, Collision, ' + s + '.png')
-    plt.clf()
-
-    change_graph('2021_01_07', '477288000', '07:22:00', f)
-    plt.title('OCEAN PRINCESS, Allision - 01/07/2021')
-    plt.savefig('graphics/' + p + 'OCEAN PRINCESS, Allision, ' + s + '.png')
-    plt.clf()
-
-    change_graph('2022_01_05', '636017782', '00:05:00', f)
-    plt.title('ORPHEUS, Loss of Propulsion - 01/05/2022')
-    plt.savefig('graphics/' + p + 'ORPHEUS, Loss of Propulsion, ' + s + '.png')
-    plt.clf()
-
-    change_graph('2022_01_06', '367103180', '07:20:00', f)
-    plt.title('JACKSON PLATTE, Allision - 01/06/2022')
-    plt.savefig('graphics/' + p + 'JACKSON PLATTE, Allision, ' + s + '.png')
-    plt.clf()
-
-    # MALAGA seems to have some issues with change graphs due to a lack of headings - we will leave it out for now
-"""
