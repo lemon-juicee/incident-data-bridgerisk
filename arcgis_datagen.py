@@ -33,12 +33,3 @@ def csvgen(path, MMSI, output=False):
 
     # Export csv file
     mapped_df.to_csv(path_or_buf=output, index=False)
-
-csvgen('2018_12_31', '367552070', output='data/coordinates_charleshuan.csv')
-csvgen('2019_01_03', '369371000', output='data/coordinates_ronniemurph.csv')
-csvgen('2019_01_14', '367638020', output='data/coordinates_randyeckstein.csv')
-csvgen('2021_01_02', '366254000', output='data/coordinates_kapenajackyoung.csv')
-csvgen('2021_01_07', '477288000', output='data/coordinates_oceanprincess.csv')
-csvgen('2022_01_05', '636017782', output='data/coordinates_orpheus.csv')
-csvgen('2022_01_06', '367103180', output='data/coordinates_jacksonplatte.csv')
-csvgen('2022_01_15', '366973130', output='data/coordinates_malaga.csv')
