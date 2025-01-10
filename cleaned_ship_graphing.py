@@ -1,12 +1,7 @@
 import numpy as np
 import pandas as pd
-from pathlib import Path
-import os
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 import matplotlib.ticker as ticker
-import datetime
-import math
 from gmc import Generic_Mask_Filter
 
 # Code written by Lemon Doroshow
