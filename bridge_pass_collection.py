@@ -14,16 +14,14 @@ def bridge_reader(path):
     finals = pandas dataframe containing the AIS datapoints after each pass
         type = pandas.DataFrame
     """
-
     # Import csv
-    # Code is largely similar to Generic_Mask_Filter as the AIS data is in similar formats
     df = pd.read_csv(path, sep=',', header=0, on_bad_lines="skip")
 
     # Remove duplicated heading rows
     df = df[df['MMSI'] != 'MMSI']
     df.reset_index(drop=True, inplace=True)
 
-    # Define dataframe objects for before and after each passe
+    # Define dataframe objects for before and after each pass
     passes = pd.DataFrame({'MMSI':df['MMSI'], 'BaseDateTime':df['BaseDateTime']})
     initials = passes[passes.index % 2 == 0]
     finals = passes[passes.index % 2 == 1]
