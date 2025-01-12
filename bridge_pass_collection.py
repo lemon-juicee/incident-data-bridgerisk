@@ -26,4 +26,16 @@ def bridge_reader(path):
     initials = passes[passes.index % 2 == 0]
     finals = passes[passes.index % 2 == 1]
 
-    return initials, finals
+    passes_paired = pd.DataFrame({'MMSI':[], 'date':[], 'time_before':[], 'time_after':[]})
+    i = 0 # For debugging
+    for i, f in zip(initials.itertuples(), finals.itertuples()):
+        if i.BaseDateTime[:10] != f.BaseDateTime[:10]:
+            raise Exception("The ship passed under a bridge at midnight!")
+        pairing = {'MMSI':i.MMSI, 'date':i.BaseDateTime[:10].replace('-','_'), 'time_before':i.BaseDateTime[11:], 'time_after':f.BaseDateTime[11:]}
+        passes_paired.loc[len(passes_paired)] = pairing
+        print(pairing, i) # For debugging
+        i += 1 # For debugging
+    
+    return passes_paired
+
+print(bridge_reader('data/FRED HARTMAN BRIDGE (TX) Data.csv'))
