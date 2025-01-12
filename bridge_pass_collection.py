@@ -4,39 +4,28 @@ from gmc import Generic_Mask_Filter
 
 def bridge_reader(path):
     """
-    bridge_reader() imports a pre-made csv including all of the passes under a ship, as rendered in our GitHub repo
+    bridge_reader() imports a pre-made csv including all of the AIS data points before and after a ship passes under a ship
     Parameters:
-    path = the bridge csv file's path
+    path = the bridge csv file's path - MUST BE a csv file pre-compiled from our GitHub repo
         type = str
     Returns
-    df = pandas dataframe containing the AIS datapoints contained in the csv
+    initials = pandas dataframe containing the AIS datapoints before each pass
+        type = pandas.DataFrame
+    finals = pandas dataframe containing the AIS datapoints after each pass
         type = pandas.DataFrame
     """
 
     # Import csv
     # Code is largely similar to Generic_Mask_Filter as the AIS data is in similar formats
-    df = pd.read_csv(path, sep=',', header=0, dtype={"Heading": "Int64", 
-                                                               "VesselName": str,
-                                                               "IMO":str,
-                                                               "MMSI":str, #Technically this should be an integer, but some files accidentally insert an alphanumeric character, causing a ValueError
-                                                               "LAT":np.float64,
-                                                               "LON":np.float64,
-                                                               "SOG":np.float64,
-                                                               "Heading":"Int64",
-                                                               "COG":np.float64,
-                                                               "IMO":str,
-                                                               "CallSign":str,
-                                                               "VesselType":"Int64",
-                                                               "Status":"Int64",
-                                                               "Length":"Int64",
-                                                               "Width":"Int64",
-                                                               "Cargo":"Int64",
-                                                               "Draft":np.float64,
-                                                               "TransceiverClass":str,
-                                                               "TranscieverClass":str}, on_bad_lines="skip")
-    
+    df = pd.read_csv(path, sep=',', header=0, on_bad_lines="skip")
 
     # Remove duplicated heading rows
     df = df[df['MMSI'] != 'MMSI']
+    df.reset_index(drop=True, inplace=True)
 
-    return df
+    # Define dataframe objects for before and after each passe
+    passes = pd.DataFrame({'MMSI':df['MMSI'], 'BaseDateTime':df['BaseDateTime']})
+    initials = passes[passes.index % 2 == 0]
+    finals = passes[passes.index % 2 == 1]
+
+    return initials, finals
