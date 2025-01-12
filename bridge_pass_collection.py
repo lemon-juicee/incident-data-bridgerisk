@@ -30,7 +30,7 @@ def bridge_reader(path):
     for i, f in zip(initials.itertuples(), finals.itertuples()):
         if i.BaseDateTime[:10] != f.BaseDateTime[:10]:
             raise Exception("The ship passed under a bridge at midnight!")
-        pairing = {'MMSI':i.MMSI, 'date':i.BaseDateTime[:10].replace('-','_'), 'time_before':i.BaseDateTime[11:], 'time_after':f.BaseDateTime[11:]}
+        pairing = {'MMSI':i.MMSI, 'date':i.BaseDateTime[:10].replace('-','_'), 'time_before':i.BaseDateTime, 'time_after':f.BaseDateTime}
         passes_paired.loc[len(passes_paired)] = pairing
     
     return passes_paired
