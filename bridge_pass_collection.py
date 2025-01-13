@@ -9,9 +9,7 @@ def bridge_reader(path):
     path = the bridge csv file's path - MUST BE a csv file pre-compiled from our GitHub repo
         type = str
     Returns
-    initials = pandas dataframe containing the AIS datapoints before each pass
-        type = pandas.DataFrame
-    finals = pandas dataframe containing the AIS datapoints after each pass
+    passes_paired = pandas dataframe containing the MMSI, date, and times before and after each pass
         type = pandas.DataFrame
     """
     # Import csv
@@ -26,16 +24,12 @@ def bridge_reader(path):
     initials = passes[passes.index % 2 == 0]
     finals = passes[passes.index % 2 == 1]
 
+    # Pair the data for each pass into a single dataframe object
     passes_paired = pd.DataFrame({'MMSI':[], 'date':[], 'time_before':[], 'time_after':[]})
-    ind = 0 # For debugging
     for i, f in zip(initials.itertuples(), finals.itertuples()):
-        if i.BaseDateTime[:10] != f.BaseDateTime[:10]:
-            raise Exception("The ship passed under a bridge at midnight!")
+        if i.BaseDateTime[:10] != f.BaseDateTime[:10]: # Since we base the date off of our initial pass,
+            raise Exception("The ship passed under a bridge at midnight!") # we would want to know if the initial and final pass aren't on the same day
         pairing = {'MMSI':i.MMSI, 'date':i.BaseDateTime[:10].replace('-','_'), 'time_before':i.BaseDateTime, 'time_after':f.BaseDateTime}
         passes_paired.loc[len(passes_paired)] = pairing
-        print(pairing, ind) # For debugging
-        ind += 1 # For debugging
     
     return passes_paired
-
-print(bridge_reader('data/FRED HARTMAN BRIDGE (TX) Data.csv'))
