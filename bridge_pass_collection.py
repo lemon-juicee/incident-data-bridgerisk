@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from geopy import distance
 from gmc import Generic_Mask_Filter
 
 def bridge_reader(path):
@@ -33,3 +34,43 @@ def bridge_reader(path):
         passes_paired.loc[len(passes_paired)] = pairing
     
     return passes_paired
+
+def COG_collection(bridge_df):
+    # WiP docstring: the goal of param_collection() is to take a dataframe compiled by bridge_reader() 
+    # and collect the COGs 5 miles upstream and downstream from the time of pass
+    cogs = []
+    for passing in bridge_df.itertuples():
+        data = Generic_Mask_Filter('data/AIS_' + passing.date + '.csv', MMSI = [str(passing.MMSI)])
+        data = data.sort_values(by='BaseDateTime')
+        data.reset_index(drop=True, inplace=True)
+
+        index_before = data.index[data['BaseDateTime'] == passing.time_before][0]
+        distance_before = 0
+        coordinate_prior = (data['LAT'].tolist()[index_before], data['LON'].tolist()[index_before])
+        while distance_before <= 5:
+            coordinate = (data['LAT'].tolist()[index_before], data['LON'].tolist()[index_before])
+            coordinate_prior = (data['LAT'].tolist()[index_before + 1], data['LON'].tolist()[index_before + 1])
+            cogs.append(data['COG'].tolist()[index_before])
+            distance_before = distance_before + distance.distance(coordinate, coordinate_prior).miles
+            print('For index' + str(index_before)) # For debugging
+            print("The added COG is" + str(data['COG'].tolist()[index_before])) # For debugging
+            print("And the cumulative distance is" + str(distance_before)) # For debugging
+            index_before -= 1
+
+        index_after = data.index[data['BaseDateTime'] == passing.time_after][0]
+        distance_after = 0
+        coordinate_prior = (data['LAT'].tolist()[index_after], data['LON'].tolist()[index_after])
+        while distance_after <= 5:
+            coordinate = (data['LAT'].tolist()[index_after], data['LON'].tolist()[index_after])
+            coordinate_prior = (data['LAT'].tolist()[index_after - 1], data['LON'].tolist()[index_after - 1])
+            cogs.append(data['COG'].tolist()[index_after])
+            distance_after = distance_after + distance.distance(coordinate, coordinate_prior).miles
+            print('For index' + str(index_after)) # For debugging
+            print("The added COG is" + str(data['COG'].tolist()[index_after])) # For debugging
+            print("And the cumulative distance is" + str(distance_after)) # For debugging
+            index_after += 1
+    
+    return cogs
+
+data = bridge_reader('data/testbridge.csv')
+print(COG_collection(data))
