@@ -167,3 +167,7 @@ def param_collection(path, param, large=False):
     
     return collection
 
+angs = param_collection('data/FRED HARTMAN BRIDGE (TX) Data.csv', 'Angle Difference', large=True)
+print(np.mean(angs), np.std(angs))
+sns.kdeplot(angs)
+plt.show()
