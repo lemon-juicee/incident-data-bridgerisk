@@ -102,6 +102,7 @@ def param_collection(path, param):
         data = data.sort_values(by='BaseDateTime')
         data.reset_index(drop=True, inplace=True)
 
+        ind = 0 # Debugging
         index_before = data.index[data['BaseDateTime'] == passing.time_before][0]
         distance_before = 0
         coordinate_prior = (data['LAT'].tolist()[index_before], data['LON'].tolist()[index_before])
@@ -115,9 +116,10 @@ def param_collection(path, param):
                 collection.append(anglediff)
             distance_before = distance_before + distance.distance(coordinate, coordinate_prior).miles
             print('For index' + str(index_before) + ' on ship' + str(passing.MMSI) + " at time " + data['BaseDateTime'].tolist()[index_before]) # For debugging
-            print("The added " + param + " is " + str(data['COG'].tolist()[index_before])) # For debugging
+            print("The added " + param + " is " + str(collection[ind])) # For debugging
             print("And the cumulative distance is " + str(distance_before) + "\n") # For debugging
             index_before -= 1
+            ind += 1 # Debugging
 
         index_after = data.index[data['BaseDateTime'] == passing.time_after][0]
         distance_after = 0
@@ -132,9 +134,10 @@ def param_collection(path, param):
                 collection.append(anglediff)
             distance_after = distance_after + distance.distance(coordinate, coordinate_prior).miles
             print('For index ' + str(index_after) + ' on ship ' + str(passing.MMSI) + " at time " + data['BaseDateTime'].tolist()[index_after]) # For debugging
-            print("The added " + param + " is " + str(data['COG'].tolist()[index_after])) # For debugging
+            print("The added " + param + " is " + str(collection[ind])) # For debugging
             print("And the cumulative distance is " + str(distance_after) + "\n") # For debugging
             index_after += 1
+            ind += 1 # Debugging
     
     return collection
 
