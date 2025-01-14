@@ -5,23 +5,6 @@ import matplotlib.ticker as ticker
 from gmc import Generic_Mask_Filter
 
 # Code written by Lemon Doroshow
-def closest(lst, K):
-    """
-    closest() finds the closest value in a list to the given value
-    Parameters:
-    lst = the input list to search through
-        type = list
-    K = the value to find a list value closest to
-        type = int
-    Returns:
-    idx = the closest value in lst to K
-        type = depends on the members of lst
-    """
-
-    lst = np.asarray(lst)
-    idx = (np.abs(lst - K)).argmin()
-    return idx
-
 def pos_angle(angle):
     """
     pos_angle() converts angles from negative degrees to positive degrees while maintaining the same magnitude and orientation
