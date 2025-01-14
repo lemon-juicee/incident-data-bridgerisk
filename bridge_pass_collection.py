@@ -138,6 +138,7 @@ def param_collection(path, param):
             print("And the cumulative distance is " + str(distance_after) + "\n") # For debugging
             index_after += 1
             ind += 1 # Debugging
+        print(str(passing.Index + 1) + "/" + str(len(bridge_df)) + " through the pass data.") # For debugging
     
     return collection
 
