@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from geopy import distance
 from gmc import Generic_Mask_Filter
 
@@ -69,21 +70,21 @@ def bridge_reader(path):
     df.reset_index(drop=True, inplace=True)
 
     # Define dataframe objects for before and after each pass
-    passes = pd.DataFrame({'MMSI':df['MMSI'], 'BaseDateTime':df['BaseDateTime']})
+    passes = pd.DataFrame({'MMSI':df['MMSI'], 'BaseDateTime':df['BaseDateTime'], 'Width':df['Width']})
     initials = passes[passes.index % 2 == 0]
     finals = passes[passes.index % 2 == 1]
 
     # Pair the data for each pass into a single dataframe object
-    passes_paired = pd.DataFrame({'MMSI':[], 'date':[], 'time_before':[], 'time_after':[]})
+    passes_paired = pd.DataFrame({'MMSI':[], 'date':[], 'time_before':[], 'time_after':[], 'Width':[]})
     for i, f in zip(initials.itertuples(), finals.itertuples()):
         if i.BaseDateTime[:10] != f.BaseDateTime[:10]: # Since we base the date off of our initial pass,
             raise Exception("The ship passed under a bridge at midnight!") # we would want to know if the initial and final pass aren't on the same day
-        pairing = {'MMSI':i.MMSI, 'date':i.BaseDateTime[:10].replace('-','_'), 'time_before':i.BaseDateTime, 'time_after':f.BaseDateTime}
+        pairing = {'MMSI':i.MMSI, 'date':i.BaseDateTime[:10].replace('-','_'), 'time_before':i.BaseDateTime, 'time_after':f.BaseDateTime, 'Width':i.Width}
         passes_paired.loc[len(passes_paired)] = pairing
     
     return passes_paired
 
-def param_collection(path, param):
+def param_collection(path, param, large=False):
     """
     param_collection() takes a csv file (formatted the same way as bridge_reader()'s input) and collects a certain parameter for every bridge pass in the file and ~5 miles up and downstream
     Parameters:
@@ -97,6 +98,8 @@ def param_collection(path, param):
     """
     # Build bridge dataframe 
     bridge_df = bridge_reader(path)
+    if large:
+        bridge_df = bridge_df[bridge_df['Width'] >= 150]
     collection = []
 
     for passing in bridge_df.itertuples(): # Iterates through the dataframe by row (for each pass)
@@ -163,3 +166,4 @@ def param_collection(path, param):
         print(str(passing.Index + 1) + "/" + str(len(bridge_df)) + " through the pass data.") # For debugging
     
     return collection
+
