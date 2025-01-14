@@ -68,7 +68,7 @@ def true_difference(angle1, angle2):
         diff = 0
     return diff
 
-def incident_graph(path, MMSI, time, plot_together=False):
+def incident_graph(path, MMSI, plot_together=False):
     """
     incident_graph() shows a graph of a day's worth of AIS data for one ship
     Parameters:
@@ -101,13 +101,6 @@ def incident_graph(path, MMSI, time, plot_together=False):
     minutes_511 = [t.minute for t in times_raw_511]
     seconds_511 = [t.second for t in times_raw_511]
     times_adjusted_511 = [h + m/60 + s/3600 for h, m, s in zip(hours_511, minutes_511, seconds_511)]
-    
-    # Adjust incident time to fit HH:MM:SS
-    time = pd.to_datetime(time)
-    time_hour= time.hour
-    time_minute = time.minute
-    time_second  = time.second
-    time_final = time_hour + time_minute/60 + time_second/3600
 
     # Extract status and angle difference data  
     statuses = data['Status']
@@ -148,19 +141,12 @@ def incident_graph(path, MMSI, time, plot_together=False):
         ax1.scatter(mapped_df['time'], mapped_df['status'])
         ax2.scatter(mapped_df['time'], mapped_df['angle_difference'])
         ax2.scatter(mapped_df_511['time'], mapped_df_511['angle_difference'], color='red')
-        ax1.axvline(time_final)
-        ax2.axvline(time_final)
     else:
         ax.scatter(mapped_df['time'], mapped_df['angle_difference'])
         ax.scatter(mapped_df_511['time'], mapped_df_511['angle_difference'], color='red')
-        ax.axvline(time_final)
         fig.tight_layout()
 
     if plot_together:
-        # Set up incident time for color map
-        color = mapped_df['true_times']
-        incident_time = time_hour+time_minute/60
-        inc_loc = closest(color, incident_time)
     
         # Create lat-long map with colorbar and point where incident occurs
         plot = ax3.scatter(data['LAT'],data['LON'], c=color)
@@ -192,7 +178,7 @@ def stddev_anglemap(path, MMSI):
     # Plot frequency histogram (as denoted by weights) with 25 bins
     plt.hist(angle_difference, bins=25, weights=np.ones_like(angle_difference) / np.size(angle_difference))
 
-def change_graph(path, MMSI, time, measurement):
+def change_graph(path, MMSI, measurement):
     """
     change_graph() shows a plot of the change in a certain variable of a ship's movement at each broadcast point
     Parameters:
@@ -200,8 +186,6 @@ def change_graph(path, MMSI, time, measurement):
         type = str
     MMSI = The MMSI of the ship in question
         type = str (returns an empty dataframe if MMSI is entered as an int or float)
-    time = the time of the event, used to plot, vertical line on the graph
-        type = string, format 'HH:MM:SS'
     measurement = which variable to plot the change of
         type = string, either 'COG', 'Heading', or 'Difference' (case sensitive)
     Returns:
@@ -217,13 +201,6 @@ def change_graph(path, MMSI, time, measurement):
     minutes = [t.minute for t in times_raw]
     seconds = [t.second for t in times_raw]
     times_adjusted = [h + m/60 + s/3600 for h, m, s in zip(hours, minutes, seconds)]
-
-    # Adjust incident time
-    time = pd.to_datetime(time)
-    time_hour= time.hour
-    time_minute = time.minute
-    time_second  = time.second
-    time_final = time_hour + time_minute/60 + time_second/3600
 
     # Set up subplots
     fig, ax = plt.subplots()
@@ -300,7 +277,6 @@ def change_graph(path, MMSI, time, measurement):
     
     # Plot scatterplot of chosen changes along with a vertical line at the time of incident
     ax.scatter(mapped_df['time'], mapped_df['change'])
-    ax.axvline(time_final)
 
 incident_graph('2019_01_08', '366995430', '02:20:00')
 plt.title('ZEUS, Allision - 01/08/2019')
