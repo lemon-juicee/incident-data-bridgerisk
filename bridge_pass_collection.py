@@ -132,7 +132,7 @@ def param_collection(path, param):
                 # Calculates angle difference according to rules set out in true_difference() function definition
                 anglediff = true_difference(pos_angle(data['COG'].tolist()[index_before]), pos_angle(data['Heading'].tolist()[index_before]))
                 collection.append(anglediff)
-            distance_before = distance_before + distance.distance(coordinate, coordinate_prior).miles # Uses geopy's distance library to find the distance in miles between datapoints and add it to cumulative 
+            distance_before += distance.distance(coordinate, coordinate_prior).miles # Uses geopy's distance library to find the distance in miles between datapoints and add it to cumulative 
             print('For index' + str(index_before) + ' on ship' + str(passing.MMSI) + " at time " + data['BaseDateTime'].tolist()[index_before]) # For debugging
             print("The added " + param + " is " + str(collection[ind])) # For debugging
             print("And the cumulative distance is " + str(distance_before) + "\n") # For debugging
@@ -153,16 +153,13 @@ def param_collection(path, param):
                 # Calculates angle difference according to rules set out in true_difference() function definition
                 anglediff = true_difference(pos_angle(data['COG'].tolist()[index_after]), pos_angle(data['Heading'].tolist()[index_after]))
                 collection.append(anglediff)
-            distance_after = distance_after + distance.distance(coordinate, coordinate_prior).miles # Uses geopy's distance library to find the distance in miles between datapoints and add it to cumulative 
+            distance_after += distance.distance(coordinate, coordinate_prior).miles # Uses geopy's distance library to find the distance in miles between datapoints and add it to cumulative 
             print('For index ' + str(index_after) + ' on ship ' + str(passing.MMSI) + " at time " + data['BaseDateTime'].tolist()[index_after]) # For debugging
             print("The added " + param + " is " + str(collection[ind])) # For debugging
             print("And the cumulative distance is " + str(distance_after) + "\n") # For debugging
             index_after += 1 # Index increases since we are now moving forward in time
             ind += 1 # For debugging
-            
+
         print(str(passing.Index + 1) + "/" + str(len(bridge_df)) + " through the pass data.") # For debugging
     
     return collection
-
-angle_diff = param_collection('data/testbridge.csv', 'Angle Difference')
-print(np.mean(angle_diff), np.std(angle_diff))
