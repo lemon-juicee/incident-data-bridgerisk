@@ -91,6 +91,7 @@ def param_collection(path, param):
         data = Generic_Mask_Filter('data/AIS_' + passing.date + '.csv', MMSI = [str(passing.MMSI)])
         if param == 'COG':
             data = data[data['COG'] != 360.0]
+            data['COG'] = [cog + 409.6 if cog < 0 else cog for cog in data['COG']]
         elif param == 'Heading':
             data = data[data['Heading'] != 511.0]
         elif param == 'Angle Difference':
@@ -110,10 +111,10 @@ def param_collection(path, param):
             if param != 'Angle Difference':
                 collection.append(data[param].tolist()[index_before])
             elif param == 'Angle Difference':
-                anglediff = true_difference(data['COG'].tolist()[index_before], data['Heading'].tolist()[index_before])
+                anglediff = true_difference(pos_angle(data['COG'].tolist()[index_before]), pos_angle(data['Heading'].tolist()[index_before]))
                 collection.append(anglediff)
             distance_before = distance_before + distance.distance(coordinate, coordinate_prior).miles
-            print('For index' + str(index_before) + ' on ship' + str(passing.MMSI)) # For debugging
+            print('For index' + str(index_before) + ' on ship' + str(passing.MMSI) + " at time " + data['BaseDateTime'].tolist()[index_before]) # For debugging
             print("The added " + param + " is " + str(data['COG'].tolist()[index_before])) # For debugging
             print("And the cumulative distance is " + str(distance_before) + "\n") # For debugging
             index_before -= 1
@@ -127,15 +128,15 @@ def param_collection(path, param):
             if param != 'Angle Difference':    
                 collection.append(data['COG'].tolist()[index_after])
             elif param == 'Angle Difference':
-                anglediff = true_difference(data['COG'].tolist()[index_after], data['Heading'].tolist()[index_after])
+                anglediff = true_difference(pos_angle(data['COG'].tolist()[index_after]), pos_angle(data['Heading'].tolist()[index_after]))
                 collection.append(anglediff)
             distance_after = distance_after + distance.distance(coordinate, coordinate_prior).miles
-            print('For index ' + str(index_after) + ' on ship ' + str(passing.MMSI)) # For debugging
+            print('For index ' + str(index_after) + ' on ship ' + str(passing.MMSI) + " at time " + data['BaseDateTime'].tolist()[index_after]) # For debugging
             print("The added " + param + " is " + str(data['COG'].tolist()[index_after])) # For debugging
             print("And the cumulative distance is " + str(distance_after) + "\n") # For debugging
             index_after += 1
     
     return collection
 
-cogs = param_collection('data/testbridge.csv', 'COG')
-print(np.mean(cogs), np.std(cogs))
+angle_diff = param_collection('data/testbridge.csv', 'Angle Difference')
+print(np.mean(angle_diff), np.std(angle_diff))
