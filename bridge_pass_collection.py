@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import pandas as pd
 from geopy import distance
 from gmc import Generic_Mask_Filter
@@ -35,10 +36,15 @@ def bridge_reader(path):
     
     return passes_paired
 
-def COG_collection(bridge_df):
+def param_collection(path, param):
     # WiP docstring: the goal of param_collection() is to take a dataframe compiled by bridge_reader() 
     # and collect the COGs 5 miles upstream and downstream from the time of pass
-    cogs = []
+    if param in ["LAT", "LON", "SOG", "Heading", "COG", "IMO", "Status", "Draft", "Angle Difference"]:
+        pass
+    else:
+        raise Exception('Please choose a parameter within the AIS data, or "Angle Difference"')
+    bridge_df = bridge_reader(path)
+    collection = []
     for passing in bridge_df.itertuples():
         data = Generic_Mask_Filter('data/AIS_' + passing.date + '.csv', MMSI = [str(passing.MMSI)])
         data = data.sort_values(by='BaseDateTime')
@@ -50,11 +56,12 @@ def COG_collection(bridge_df):
         while distance_before <= 5:
             coordinate = (data['LAT'].tolist()[index_before], data['LON'].tolist()[index_before])
             coordinate_prior = (data['LAT'].tolist()[index_before + 1], data['LON'].tolist()[index_before + 1])
-            cogs.append(data['COG'].tolist()[index_before])
+            if param != 'Angle Difference':
+                collection.append(data[param].tolist()[index_before])
             distance_before = distance_before + distance.distance(coordinate, coordinate_prior).miles
-            print('For index' + str(index_before)) # For debugging
-            print("The added COG is" + str(data['COG'].tolist()[index_before])) # For debugging
-            print("And the cumulative distance is" + str(distance_before)) # For debugging
+            print('For index' + str(index_before) + ' on ship' + str(passing.MMSI)) # For debugging
+            print("The added" + param + " is " + str(data['COG'].tolist()[index_before])) # For debugging
+            print("And the cumulative distance is " + str(distance_before) + "\n") # For debugging
             index_before -= 1
 
         index_after = data.index[data['BaseDateTime'] == passing.time_after][0]
@@ -63,14 +70,15 @@ def COG_collection(bridge_df):
         while distance_after <= 5:
             coordinate = (data['LAT'].tolist()[index_after], data['LON'].tolist()[index_after])
             coordinate_prior = (data['LAT'].tolist()[index_after - 1], data['LON'].tolist()[index_after - 1])
-            cogs.append(data['COG'].tolist()[index_after])
+            if param != 'Angle Difference':    
+                collection.append(data['COG'].tolist()[index_after])
             distance_after = distance_after + distance.distance(coordinate, coordinate_prior).miles
-            print('For index' + str(index_after)) # For debugging
-            print("The added COG is" + str(data['COG'].tolist()[index_after])) # For debugging
-            print("And the cumulative distance is" + str(distance_after)) # For debugging
+            print('For index ' + str(index_after) + ' on ship ' + str(passing.MMSI)) # For debugging
+            print("The added" + param + " is " + str(data['COG'].tolist()[index_after])) # For debugging
+            print("And the cumulative distance is " + str(distance_after) + "\n") # For debugging
             index_after += 1
     
-    return cogs
+    return collection
 
-data = bridge_reader('data/testbridge.csv')
-print(COG_collection(data))
+cogs = param_collection('data/testbridge.csv', 'COG')
+print(cogs)
