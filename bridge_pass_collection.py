@@ -1,7 +1,8 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from geopy import distance
+from cleaned_ship_graphing import pos_angle, true_difference
 from gmc import Generic_Mask_Filter
 
 def bridge_reader(path):
@@ -81,4 +82,4 @@ def param_collection(path, param):
     return collection
 
 cogs = param_collection('data/testbridge.csv', 'COG')
-print(cogs)
+print(np.mean(cogs), np.std(cogs))
