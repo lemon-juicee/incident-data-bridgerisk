@@ -112,28 +112,6 @@ def incident_graph(path, MMSI):
     ax.scatter(mapped_df_511['time'], mapped_df_511['angle_difference'], color='red')
     fig.tight_layout()
 
-def stddev_anglemap(path, MMSI):
-    """
-    stddev_anglemap() creates a histogram of a ship's angle differences over the course of a day
-    Parameters:
-    path = The date of an AIS csv file; ex: for the file AIS_2018_12_31.csv, path = '2018_12_31' in YYYY_MM_DD format
-        type = str
-    MMSI = The MMSI of the ship in question
-        type = str (returns an empty dataframe if MMSI is entered as an int or float)
-    Returns:
-    matplotlib figure to be called with plt.show() or plt.savefig()
-    """
-
-    # Import data from csv and filter out null heading values
-    data = Generic_Mask_Filter(("data/AIS_" + path + '.csv'), MMSI=[MMSI])
-    data = data[(data['Heading'] != 511.0) & (data['COG'] != 360.0)]
-
-    # Calculate angle difference
-    angle_difference = [true_difference(pos_angle(cog), pos_angle(heading)) for cog, heading in zip(data['COG'], data['Heading'].astype(np.float64))]
-    
-    # Plot frequency histogram (as denoted by weights) with 25 bins
-    plt.hist(angle_difference, bins=25, weights=np.ones_like(angle_difference) / np.size(angle_difference))
-
 def change_graph(path, MMSI, measurement):
     """
     change_graph() shows a plot of the change in a certain variable of a ship's movement at each broadcast point
