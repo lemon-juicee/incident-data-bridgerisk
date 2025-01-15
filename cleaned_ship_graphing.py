@@ -253,16 +253,28 @@ def param_hist(path, MMSI, param, change=False, kde=True):
     data = data.sort_values(by='BaseDateTime')
     data.reset_index(drop=True, inplace=True)
 
-    if param == 'Angle Difference':
-        collection = [true_difference(pos_angle(cog), pos_angle(Heading)) for cog, Heading in zip(data['COG'].tolist(), data['Heading'].tolist())]
+    if change:
+        if param == 'Angle Difference':
+            precol = [true_difference(pos_angle(cog), pos_angle(Heading)) for cog, Heading in zip(data['COG'].tolist(), data['Heading'].tolist())]
+        else:
+            precol = data[param].tolist()
+        collection = [0]
+        i = 1
+        while i < len(precol):
+            collection.append(precol[i] - precol[i-1])
+            i += 1
     else:
-        collection = data[param].tolist()
+        if param == 'Angle Difference':
+            collection = [true_difference(pos_angle(cog), pos_angle(Heading)) for cog, Heading in zip(data['COG'].tolist(), data['Heading'].tolist())]
+        else:
+            collection = data[param].tolist()
     
     fig, ax = plt.subplots()
     sns.histplot(x=collection, stat='density', bins = int(len(collection) / 10), color="royalblue")
     sns.kdeplot(x=collection, color='black')
 
-param_hist('2018_12_31', '367552070', 'Angle Difference')
+param_hist('2018_12_31', '367552070', 'Angle Difference', change=True)
 plt.show()
+
 
     
