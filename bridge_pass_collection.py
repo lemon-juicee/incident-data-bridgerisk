@@ -118,6 +118,9 @@ def param_collection(path, param, large=False):
         elif param == 'Angle Difference':
             data = data[(data['Heading'] != 511.0) & (data['COG'] != 360.0)]
             data['COG'] = [cog + 409.6 if cog < 0 else cog for cog in data['COG']]
+        elif param == "SOG":
+            data = data[data['SOG'] < 102.3]
+            data['SOG'] = [sog + 102.4 if sog < 0 else sog for sog in data['SOG']]
         else: 
             pass
         data = data.sort_values(by='BaseDateTime')

@@ -232,3 +232,24 @@ def change_graph(path, MMSI, measurement):
     
     # Plot scatterplot of chosen changes along with a vertical line at the time of incident
     ax.scatter(mapped_df['time'], mapped_df['change'])
+
+def param_hist(path, MMSI, param, change=False):
+
+    data = Generic_Mask_Filter('data/AIS_' + path + '.csv', MMSI = [MMSI])
+    if param == 'COG':
+        data = data[data['COG'] != 360.0]
+        data['COG'] = [cog + 409.6 if cog < 0 else cog for cog in data['COG']]
+    elif param == 'Heading':
+        data = data[data['Heading'] != 511.0]
+    elif param == 'Angle Difference':
+        data = data[(data['Heading'] != 511.0) & (data['COG'] != 360.0)]
+        data['COG'] = [cog + 409.6 if cog < 0 else cog for cog in data['COG']]
+    elif param == "SOG":
+        data = data[data['SOG'] < 102.3]
+        data['SOG'] = [sog + 102.4 if sog < 0 else sog for sog in data['SOG']]
+    else: 
+        pass
+    data = data.sort_values(by='BaseDateTime')
+    data.reset_index(drop=True, inplace=True)
+
+    
