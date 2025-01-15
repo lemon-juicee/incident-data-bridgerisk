@@ -7,7 +7,7 @@ from gmc import Generic_Mask_Filter
 
 def pos_angle(angle):
     """
-    pos_angle() converts angles from negative degrees to positive degrees while maintaining the same magnitude and orientation
+    pos_angle() converts angles from negative degrees to positive degrees while maintaining the same magnitude and orientation, and also adjusts angles above 360 degrees to be within the range [0,360]
     Parameters:
     angle = the input angle
         type = int
@@ -17,7 +17,9 @@ def pos_angle(angle):
     """
 
     while angle < 0:
-        angle = angle + 360
+        angle += 360
+    while angle > 360:
+        angle -= 360
     return angle
 
 def true_difference(angle1, angle2):
