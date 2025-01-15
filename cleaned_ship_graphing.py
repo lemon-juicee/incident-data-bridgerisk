@@ -51,7 +51,7 @@ def true_difference(angle1, angle2):
         diff = 0
     return diff
 
-def incident_graph(path, MMSI, plot_together=False):
+def incident_graph(path, MMSI):
     """
     incident_graph() shows a graph of a day's worth of AIS data for one ship
     Parameters:
@@ -96,48 +96,18 @@ def incident_graph(path, MMSI, plot_together=False):
     mapped_df_511 = pd.DataFrame(mapped_data_511)
 
     # Set up figure and axes
-    if plot_together:
-        fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(12,4))
-    else:
-        fig, ax = plt.subplots()
+    fig, ax = plt.subplots()
     
     # Labelling status and angle difference graphs
-    if plot_together:
-        ax1.xaxis.set_major_locator(ticker.LinearLocator(8))
-        ax1.tick_params(axis='x',labelrotation=45)
-        ax1.set_xlabel('Time (UTC)')
-        ax1.set_ylabel('Status')
-        ax2.xaxis.set_major_locator(ticker.LinearLocator(8))
-        ax2.tick_params(axis='x',labelrotation=45)
-        ax2.set_xlabel('Time (UTC)')
-        ax2.set_ylabel('Angle Difference (deg)')
-        ax3.set_xlabel('Latitude (deg)')
-        ax3.set_ylabel('Longitude(deg)')
-    else:
-        ax.xaxis.set_major_locator(ticker.LinearLocator(8))
-        ax.tick_params(axis='x',labelrotation=45)
-        ax.set_xlabel('Time (UTC)')
-        ax.set_ylabel('Angle Difference (deg)')
+    ax.xaxis.set_major_locator(ticker.LinearLocator(8))
+    ax.tick_params(axis='x',labelrotation=45)
+    ax.set_xlabel('Time (UTC)')
+    ax.set_ylabel('Angle Difference (deg)')
 
     # Create scatter plots with vertical line at incident time
-    if plot_together:
-        ax1.scatter(mapped_df['time'], mapped_df['status'])
-        ax2.scatter(mapped_df['time'], mapped_df['angle_difference'])
-        ax2.scatter(mapped_df_511['time'], mapped_df_511['angle_difference'], color='red')
-    else:
-        ax.scatter(mapped_df['time'], mapped_df['angle_difference'])
-        ax.scatter(mapped_df_511['time'], mapped_df_511['angle_difference'], color='red')
-        fig.tight_layout()
-
-    if plot_together:
-    
-        # Create lat-long map with colorbar and point where incident occurs
-        plot = ax3.scatter(data['LAT'],data['LON'], c=color)
-        dot = ax3.plot(data['LAT'].tolist()[inc_loc], data['LON'].tolist()[inc_loc], 'vk', markersize='10', fillstyle='none')
-        cbar = fig.colorbar(plot)
-
-        # Add space between plots
-        plt.subplots_adjust(wspace=0.5, hspace=0.5)
+    ax.scatter(mapped_df['time'], mapped_df['angle_difference'])
+    ax.scatter(mapped_df_511['time'], mapped_df_511['angle_difference'], color='red')
+    fig.tight_layout()
 
 def stddev_anglemap(path, MMSI):
     """
@@ -260,63 +230,3 @@ def change_graph(path, MMSI, measurement):
     
     # Plot scatterplot of chosen changes along with a vertical line at the time of incident
     ax.scatter(mapped_df['time'], mapped_df['change'])
-
-incident_graph('2019_01_08', '366995430', '02:20:00')
-plt.title('ZEUS, Allision - 01/08/2019')
-plt.savefig('graphics/ZEUS, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2019_01_24', '366998110', '19:30:00')
-plt.title('STEVE RICHOUX, Allision - 01/24/2019')
-plt.savefig('graphics/STEVE RICHOUX, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2019_02_17', '367638130', '20:25:00')
-plt.title('JOSEPH PATRICK ECKSTEIN, Allision - 02/17/2019')
-plt.savefig('graphics/JOSEPH PATRICK ECKSTEIN, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2019_02_12', '367641610', '16:15:00')
-plt.title('PAUL MCGINNESS, Allision - 02/12/2019')
-plt.savefig('graphics/PAUL MCGINNESS, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2021_03_01', '367690990', '21:15:00')
-plt.title('ANGELIA B, Allision - 03/01/2021')
-plt.savefig('graphics/ANGELIA B, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2021_04_10', '338257000', '22:43:00')
-plt.title('BROOKS MCCALL, Allision - 04/10/2021')
-plt.savefig('graphics/BROOKS MCCALL, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2021_06_10', '367781550', '18:05:00')
-plt.title('GARLAND GASPARD, Allision - 06/10/2021')
-plt.savefig('graphics/GARLAND GASPARD, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2021_08_17', '368142750', '01:18:00')
-plt.title('NYQUIST, Allision - 08/17/2021')
-plt.savefig('graphics/NYQUIST, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2022_01_24', '366946840', '00:20:00')
-plt.title('MEAGHAN MARIE, Allision - 01/24/2022')
-plt.savefig('graphics/MEAGHAN MARIE, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2023_01_04', '368217370', '23:30:00')
-plt.title('MISS TERRI, Allision - 01/04/2023')
-plt.savefig('graphics/MISS TERRI, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2023_02_04', '367656820', '01:07:00')
-plt.title('BRIANNA ELIZABETH, Allision - 02/03/2023')
-plt.savefig('graphics/BRIANNA ELIZABETH, Allision.png', bbox_inches='tight')
-plt.clf()
-
-incident_graph('2023_03_22', '368236120', '04:10:00')
-plt.title('JAMES E JACKSON, Allision - 03/21/2023')
-plt.savefig('graphics/JAMES E JACKSON, Allision.png', bbox_inches='tight')
-plt.clf()
