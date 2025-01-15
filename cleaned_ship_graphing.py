@@ -235,7 +235,24 @@ def change_graph(path, MMSI, measurement):
     ax.scatter(mapped_df['time'], mapped_df['change'])
 
 def param_hist(path, MMSI, param, change=False, kde=True):
+    """
+    param_hist() creates a histogram of a ship's given parameter (or change in that parameter at every AIS broadcast point) over the course of a day
+    Parameters:
+    path = The date of an AIS csv file; ex: for the file AIS_2018_12_31.csv, path = '2018_12_31' in YYYY_MM_DD format
+        type = str
+    MMSI = The MMSI of the ship in question
+        type = str (returns an empty dataframe if MMSI is entered as an int or float)
+    param = the parameter to collect, must be in ["LAT", "LON", "SOG", "Heading", "COG", "IMO", "Status", "Draft", "Angle Difference"]
+        type = str
+    change = if True, calculates the change between datapoint with index i and datapoint with index i-1 for a parameter at each AIS point
+        type = bool
+    kde = if True, plots a kernel density estimate along with the histogram
+        type = bool
+    Returns:
+    matplotlib figure to be called with plt.show() or plt.savefig()
+    """
 
+    # Import data and filter
     data = Generic_Mask_Filter('data/AIS_' + path + '.csv', MMSI = [MMSI])
     if param == 'COG':
         data = data[data['COG'] != 360.0]
@@ -253,6 +270,7 @@ def param_hist(path, MMSI, param, change=False, kde=True):
     data = data.sort_values(by='BaseDateTime')
     data.reset_index(drop=True, inplace=True)
 
+    # Collect data in list depending on parameter and whether or not change = True
     if change:
         if param == 'Angle Difference':
             precol = [true_difference(pos_angle(cog), pos_angle(Heading)) for cog, Heading in zip(data['COG'].tolist(), data['Heading'].tolist())]
@@ -269,12 +287,9 @@ def param_hist(path, MMSI, param, change=False, kde=True):
         else:
             collection = data[param].tolist()
     
-    fig, ax = plt.subplots()
+    # Plot the histogram and kde, if applicable
     sns.histplot(x=collection, stat='density', bins = int(len(collection) / 10), color="royalblue")
-    sns.kdeplot(x=collection, color='black')
-
-param_hist('2018_12_31', '367552070', 'Angle Difference', change=True)
-plt.show()
-
+    if kde:    
+        sns.kdeplot(x=collection, color='black')
 
     
