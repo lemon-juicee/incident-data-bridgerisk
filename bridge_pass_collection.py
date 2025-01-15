@@ -99,6 +99,8 @@ def param_collection(path, param, large=False):
     # Build bridge dataframe 
     bridge_df = bridge_reader(path)
     if large:
+        bridge_df = bridge_df[bridge_df['Width'].notna()]
+        bridge_df['Width'] = bridge_df['Width'].astype(int)
         bridge_df = bridge_df[bridge_df['Width'] >= 150]
     collection = []
 
@@ -166,8 +168,3 @@ def param_collection(path, param, large=False):
         print(str(passing.Index + 1) + "/" + str(len(bridge_df)) + " through the pass data.") # For debugging
     
     return collection
-
-angs = param_collection('data/FRED HARTMAN BRIDGE (TX) Data.csv', 'Angle Difference', large=True)
-print(np.mean(angs), np.std(angs))
-sns.kdeplot(angs)
-plt.show()
