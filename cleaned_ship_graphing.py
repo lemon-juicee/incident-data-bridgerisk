@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from gmc import Generic_Mask_Filter
@@ -233,7 +234,7 @@ def change_graph(path, MMSI, measurement):
     # Plot scatterplot of chosen changes along with a vertical line at the time of incident
     ax.scatter(mapped_df['time'], mapped_df['change'])
 
-def param_hist(path, MMSI, param, change=False):
+def param_hist(path, MMSI, param, change=False, kde=True):
 
     data = Generic_Mask_Filter('data/AIS_' + path + '.csv', MMSI = [MMSI])
     if param == 'COG':
@@ -251,5 +252,17 @@ def param_hist(path, MMSI, param, change=False):
         pass
     data = data.sort_values(by='BaseDateTime')
     data.reset_index(drop=True, inplace=True)
+
+    if param == 'Angle Difference':
+        collection = [true_difference(pos_angle(cog), pos_angle(Heading)) for cog, Heading in zip(data['COG'].tolist(), data['Heading'].tolist())]
+    else:
+        collection = data[param].tolist()
+    
+    fig, ax = plt.subplots()
+    sns.histplot(x=collection, stat='density', bins = int(len(collection) / 10), color="royalblue")
+    sns.kdeplot(x=collection, color='black')
+
+param_hist('2018_12_31', '367552070', 'Angle Difference')
+plt.show()
 
     
