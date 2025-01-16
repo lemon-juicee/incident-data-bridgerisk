@@ -68,3 +68,52 @@ def Generic_Mask_Filter(file_path, MMSI=False, BaseDateTime=False, LAT=False, LO
             df = df.loc[df[column].isin(requirements)]
 
     return df
+
+# Code from here written by Lemon Doroshow
+def pos_angle(angle):
+    """
+    pos_angle() converts angles from negative degrees to positive degrees while maintaining the same magnitude and orientation, and also adjusts angles above 360 degrees to be within the range [0,360]
+    Parameters:
+    angle = the input angle
+        type = int
+    Returns:
+    angle = the angle, adjusted to be positive (as low as possible)
+        type = int
+    """
+
+    while angle < 0:
+        angle += 360
+    while angle > 360:
+        angle -= 360
+    return angle
+
+def true_difference(angle1, angle2):
+    """
+    Creates a difference of two angles as follows:
+    If 0 < true_difference < 180, then angle1 is clockwise of angle2, measured by the interior angle
+    If -180 < true_difference < 0, then angle1 is counterclockwise of angle2, measured by itnerior angle
+    Angles with a difference of 0, -180, or 180 are left unchanged
+    It is recommended for pos_angle() to be used on both angles beforehand
+    Parameters:
+    angle1 = the first angle, according to the rules above
+        type = int
+    angle2 = the second angle, according to the rules above
+        type = int
+    Returns:
+    diff = the difference of the angles as described above
+        type = int
+    """
+
+    if angle1-angle2 > 180:
+        diff = (-1)*(360 - angle1 + angle2)
+    if angle1-angle2 < -180:
+        diff = 360 + angle1 - angle2
+    if angle1-angle2 > -180 and angle1-angle2 < 180:
+        diff = angle1-angle2
+    if angle1-angle2 == 180:
+        diff = 180
+    if angle1-angle2 == -180:
+        diff = -180
+    if angle1-angle2 == 0:
+        diff = 0
+    return diff
