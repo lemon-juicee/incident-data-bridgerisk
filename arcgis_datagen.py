@@ -24,12 +24,13 @@ def csvgen(path, MMSI, output=False):
     # Import filtered AIS data
     data = Generic_Mask_Filter(("data/AIS_" + path + '.csv'), MMSI=[MMSI])
 
-    # Adjust time to compatible format for ArcGIS
+    # Adjust times and speeds over ground, calculate angle differences
     times_adjusted=[x.strftime('%c') for x in  pd.to_datetime(data["BaseDateTime"])]
-    sogs = ['Null' if sog > 102.3 else sog for sog in [sog + 102.4 if sog < 0 else sog for sog in data['SOG']]]
+    sogs = [np.nan if sog >= 102.3 else sog for sog in [sog + 102.4 if sog < 0 else sog for sog in data['SOG']]]
+    angle_diffs = [np.nan if cog == 360.0 or heading == 511.0 else true_difference(pos_angle(cog),pos_angle(heading)) for cog, heading in zip([cog + 409.6 if cog < 0 else cog for cog in data['COG']], data['Heading'])]
 
     # Convert data to pd.DataFrame
-    mapped_data = {'longitude':data['LON'], 'latitude':data['LAT'], 'time':times_adjusted, 'SOG':sogs}
+    mapped_data = {'longitude':data['LON'], 'latitude':data['LAT'], 'time':times_adjusted, 'SOG':sogs, 'Angle Difference':angle_diffs}
     mapped_df = pd.DataFrame(mapped_data)
     mapped_df = mapped_df.sort_values('time')
 
