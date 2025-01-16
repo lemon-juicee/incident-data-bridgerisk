@@ -81,7 +81,7 @@ def param_collection(path, param, large=False):
 
         # Upstream loop
         ind = 0 # For debugging
-        index_before = data.index[data['BaseDateTime'] == passing.time_before][0]
+        index_before = data.index[data['BaseDateTime'] == passing.time_before][0] # Index is returned as a list, but one ship cannot have 2 AIS data points at the same time, so we take the only index
         distance_before = 0
         coordinate_prior = (data['LAT'].tolist()[index_before], data['LON'].tolist()[index_before])
 
@@ -103,7 +103,7 @@ def param_collection(path, param, large=False):
             ind += 1 # For debugging
 
         # Downstream loop
-        index_after = data.index[data['BaseDateTime'] == passing.time_after][0]
+        index_after = data.index[data['BaseDateTime'] == passing.time_after][0] # Index is returned as a list, but one ship cannot have 2 AIS data points at the same time, so we take the only index
         distance_after = 0
         coordinate_prior = (data['LAT'].tolist()[index_after], data['LON'].tolist()[index_after])
 
