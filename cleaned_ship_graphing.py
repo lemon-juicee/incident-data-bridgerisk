@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from gmc import Generic_Mask_Filter, pos_angle, true_difference
+from tools import Generic_Mask_Filter, pos_angle, true_difference
 
 # Code written by Lemon Doroshow
 def incident_graph(path, MMSI):

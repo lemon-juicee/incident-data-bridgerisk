@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from geopy import distance
-from gmc import Generic_Mask_Filter, pos_angle, true_difference
+from tools import Generic_Mask_Filter, pos_angle, true_difference
 
 # Code written by Lemon Doroshow
 def bridge_reader(path):
