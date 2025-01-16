@@ -26,11 +26,12 @@ def csvgen(path, MMSI, output=False):
 
     # Adjust time to compatible format for ArcGIS
     times_adjusted=[x.strftime('%c') for x in  pd.to_datetime(data["BaseDateTime"])]
-    
+    sogs = ['Null' if sog > 102.3 else sog for sog in [sog + 102.4 if sog < 0 else sog for sog in data['SOG']]]
+
     # Convert data to pd.DataFrame
-    mapped_data = {'longitude':data['LON'], 'latitude':data['LAT'], 'time':times_adjusted, 'SOG':[sog + 102.4 if sog < 0 else sog for sog in data['SOG']]}
+    mapped_data = {'longitude':data['LON'], 'latitude':data['LAT'], 'time':times_adjusted, 'SOG':sogs}
     mapped_df = pd.DataFrame(mapped_data)
     mapped_df = mapped_df.sort_values('time')
-    
+
     # Export csv file
     mapped_df.to_csv(path_or_buf=output, index=False)
