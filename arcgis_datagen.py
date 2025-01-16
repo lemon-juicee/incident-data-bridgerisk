@@ -1,5 +1,6 @@
 import pandas as pd
-from gmc import Generic_Mask_Filter
+import numpy as np
+from tools import Generic_Mask_Filter, pos_angle, true_difference
 
 # Code written by Lemon Doroshow
 def csvgen(path, MMSI, output=False):
@@ -27,9 +28,9 @@ def csvgen(path, MMSI, output=False):
     times_adjusted=[x.strftime('%c') for x in  pd.to_datetime(data["BaseDateTime"])]
     
     # Convert data to pd.DataFrame
-    mapped_data = {'longitude':data['LON'], 'latitude':data['LAT'], 'time':times_adjusted}
+    mapped_data = {'longitude':data['LON'], 'latitude':data['LAT'], 'time':times_adjusted, 'SOG':[sog + 102.4 if sog < 0 else sog for sog in data['SOG']]}
     mapped_df = pd.DataFrame(mapped_data)
     mapped_df = mapped_df.sort_values('time')
-
+    
     # Export csv file
     mapped_df.to_csv(path_or_buf=output, index=False)
