@@ -1,3 +1,4 @@
 AIS*.csv
 arcgis/*
 __pycache__/
+*Data.csv
