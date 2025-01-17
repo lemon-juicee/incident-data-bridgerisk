@@ -172,7 +172,7 @@ def param_hist(path, MMSI, param, change=False, kde=True):
         type = str
     MMSI = The MMSI of the ship in question
         type = str (returns an empty dataframe if MMSI is entered as an int or float)
-    param = the parameter to collect, must be in ["LAT", "LON", "SOG", "Heading", "COG", "IMO", "Status", "Draft", "Angle Difference"]
+    param = the parameter to collect, must be in ["LAT", "LON", "SOG", "Heading", "COG", "Status", "Draft", "Angle Difference"]
         type = str
     change = if True, calculates the change between datapoint with index i and datapoint with index i-1 for a parameter at each AIS point
         type = bool
@@ -221,7 +221,15 @@ def param_hist(path, MMSI, param, change=False, kde=True):
     sns.histplot(x=collection, stat='density', bins = int(len(collection) / 10), color="royalblue")
     if kde:    
         sns.kdeplot(x=collection, color='black')
-    plt.xlabel(param)
+    if param in ["LAT", "LON", "Heading", "COG", "Angle Difference"]:
+        unit = ' (deg)'
+    elif param == 'Draft':
+        unit = ' (meters)'
+    elif param == 'SOG':
+        unit = ' (knots)'
+    elif param == 'Status':
+        unit = ''
+    plt.xlabel(param + unit)
     plt.ylabel('Density')
 
 param_hist('2018_12_31', '367552070', 'Angle Difference')
