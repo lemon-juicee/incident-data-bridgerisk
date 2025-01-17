@@ -17,7 +17,7 @@ def csvgen(path, MMSI, output=False):
 
     # Set up output path
     if output:
-        output = 'data/coordinates_' + output + '.csv'
+        output = output
     else:
         output='data/coordinates_' + path + '.csv'
 
@@ -36,14 +36,3 @@ def csvgen(path, MMSI, output=False):
 
     # Export csv file
     mapped_df.to_csv(path_or_buf=output, index=False)
-
-csvgen('2018_12_31', '367552070', 'charleshuan')
-csvgen('2022_01_06', '367103180', 'jacksonplatte')
-csvgen('2021_01_07', '477288000', 'oceanprincess')
-csvgen('2019_01_14', '367638020', 'randyeckstein')
-csvgen('2021_04_10', '338257000', 'brooksmccall')
-csvgen('2021_06_10', '367781550', 'garlandgaspard')
-csvgen('2023_03_22', '368236120', 'jamesejackson')
-csvgen('2022_01_24', '366946840', 'meaghanmarie')
-csvgen('2021_08_17', '368142750', 'nyquist')
-csvgen('2019_01_08', '366995430', 'zeus')
