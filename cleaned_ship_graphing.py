@@ -221,6 +221,7 @@ def param_hist(path, MMSI, param, change=False, kde=True):
     sns.histplot(x=collection, stat='density', bins = int(len(collection) / 10), color="royalblue")
     if kde:    
         sns.kdeplot(x=collection, color='black')
+    plt.xlabel(param)
     plt.ylabel('Density')
 
 param_hist('2018_12_31', '367552070', 'Angle Difference')
